@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blindfold Chess</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      background-color: black;
+    }
+    #menu, #game {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #menu.active, #game.active {
+      display: flex;
+    }
+    select {
+      width: 250px;
+      font-size: 1.2em;
+      padding: 0.3em;
+      margin-top: 1em;
+    }
+    button {
+      margin: 0.5em;
+      font-size: 1.2em;
+      background-color: #007bff;
+      border-radius: 5px;
+      padding: 5px;
+      width: 250px;
+      color: white;
+      border: none;
+    }
+    #touchOverlay {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+    .touch-corner {
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 6em;
+      color: #333;
+    }
+    .touch-corner span {
+        display: none;
+    }
+    .touch-corner.show-icon span {
+        display: block;
+        background-color: white;
+        border-radius: 50%;
+    }
+    #cancelSelectionBtn, #undoMoveBtn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 1.2em;
+      width: 200px;
+    }
+    #cancelSelectionBtn {
+      bottom: 60px;
+    }
+    #undoMoveBtn {
+      bottom: 10px;
+    }
+    #menuBtn {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 1.2em;
+    }
+    #lastMoves {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5em;
+      color: #333;
+      z-index: 30;
+    }
+    #boardNumber {
+      position: absolute;
+      top: calc(50% - 50px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2em;
+      font-weight: bold;
+      color: #333;
+      z-index: 30;    
+    }
+    h1 {
+      margin-bottom: 1em;
+      color:#007bff;
+    }
+    #resumeBtn.hidden {
+      display: none;
+    }
+    #selectionPreview {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 150px;
+      height: 150px;
+      transform: translate(-50%, -50%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      z-index: 25;
+      background-color: white;
+    }
+    #fenPreview {
+      background-color: white;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="menu" class="active">
+    <h1>Blindfold Chess</h1>
+    <select id="boardsSelect">
+      <option value="1">1 board</option>
+      <option value="2">2 boards</option>
+      <option value="3">3 boards</option>
+      <option value="4">4 boards</option>
+      <option value="5">5 boards</option>
+      <option value="6">6 boards</option>
+      <option value="7">7 boards</option>
+      <option value="8">8 boards</option>
+    </select>
+    <select id="colorSelect">
+      <option value="white">White pieces</option>
+      <option value="black">Black pieces</option>
+    </select>
+    <select id="levelSelect">
+      <option value="1">Level: depth 1 (easy)</option>
+      <option value="2">Level: depth 2</option>
+      <option value="3">Level: depth 3</option>
+      <option value="4">Level: depth 4</option>
+      <option value="5">Level: depth 5</option>
+      <option value="6">Level: depth 6</option>
+      <option value="8">Level: depth 8</option>
+      <option value="9">Level: depth 9</option>
+      <option value="10">Level: depth 10</option>
+      <option value="15">Level: depth 15 (hard)</option>
+    </select>
+    <select id="variantSelect">
+      <option value="standard">Variant: Standard</option>
+      <option value="960">Variant: 960</option>
+    </select>
+    <div id="fenPreview" style="font-size: 2em; font-family: sans-serif; text-align: center"></div>
+    <label style="margin-top: 35px; margin-bottom: 25px; color: white">
+      <input type="checkbox" id="alwaysQueen" checked> Always promote to queen
+    </label>
+    <button id="startBtn">Start Game</button>
+    <button id="resumeBtn" class="hidden">Resume Game</button>
+    <a href="https://github.com/blindfold-chess/blindfold-chess" target="_blank" style="margin-top: 1em; font-size: 1.2em; text-decoration: none; color: #007bff;">About this app</a>
+  </div>
+
+  <div id="game">
+    <div id="touchOverlay">
+      <div class="touch-corner" id="ul"></div>
+      <div class="touch-corner" id="ur"></div>
+      <div class="touch-corner" id="dl"></div>
+      <div class="touch-corner" id="dr"></div>
+    </div>
+    <div id="illegalMoveOverlay" style="position: absolute; top: 50%; left: 50%; width: 150px; height: 150px; transform: translate(-50%, -50%); z-index: 26; pointer-events: none;">
+    </div>
+    <div id="selectionPreview">
+    </div>
+    <div id="lastMoves">
+    </div>
+    <div id="boardNumber">
+    </div>
+    <button id="menuBtn">Menu</button>
+    <button id="cancelSelectionBtn">Cancel Selection</button>
+    <button id="undoMoveBtn">Undo Last Move</button>
+  </div>
+
+  <script type="module" >
+    import { Chess, generateChess960Fen } from './libs/chess.js';
+    const pieceIcons = {
+      r: '♜', n: '♞', b: '♝', q: '♛', k: '♚', p: '♟',
+      R: '♖', N: '♘', B: '♗', Q: '♕', K: '♔', P: '♙'
+    };
+    function getPieceIcon(lowerCasePiece, color) {
+      if (color === 'w') {
+        return pieceIcons[lowerCasePiece.toUpperCase()];
+      } else if (color === 'b') {
+        return pieceIcons[lowerCasePiece];
+      } else {
+        throw `Unknown color '${color}'`;
+      }
+    }
+    let simul = 1;
+    let moveSequence = [];
+    let fromPiece = null;
+    let fromSquare = null;
+    let toSquare = null;
+    let playerColor = 'white';
+    let games = [];
+    let currentGameIndex = 0;
+    let previousGameIndex = 0;
+    let promotionPending = false;
+    let promotionFromSquare = null;
+    let promotionTargetSquare = null;
+    let stockfishDepth;
+
+    function getCurrentGame() {
+      return games[currentGameIndex];
+    }
+
+    function getPlayerColor() {
+      if (simul > 1) {
+        return currentGameIndex % 2 == 0 ? 'white' : 'black';
+      } else {
+        return playerColor;
+      }
+    }
+
+    function getEngineColor() {
+      return getPlayerColor() == 'white' ? 'black' : 'white';
+    }
+
+    function handleBoardNumberCommunication() {
+      const boardNrEl = document.getElementById("boardNumber");
+      if (simul > 1) {
+        let nr = currentGameIndex + 1;
+        playSound("board");
+        playSound(nr.toString());
+        boardNrEl.textContent = `Board ${nr}`;
+      } else {
+        boardNrEl.textContent = '';
+      }
+    }
+
+    function isSimul() {
+      return simul > 1;
+    }
+
+    function goToNextBoard() {
+      previousGameIndex = currentGameIndex;
+      let foundUnfinishedGame = false;
+      for (let i = 1; i < games.length; i++) {
+        currentGameIndex = (currentGameIndex + 1) % games.length;
+        if (getCurrentGame().isGameOver()) {
+          continue;
+        } else {
+          foundUnfinishedGame = true;
+          break;
+        }
+      }
+      if (!foundUnfinishedGame) {
+        return;
+      }
+
+      handleBoardNumberCommunication();
+      stockfish.postMessage("position fen " + getCurrentGame().fen());
+      stockfish.postMessage(`go depth ${stockfishDepth}`);
+    }
+
+    const stockfish = new Worker("./libs/stockfish.js");
+
+    stockfish.onmessage = function (event) {
+      const msg = event.data;
+      if (msg.startsWith("bestmove")) {
+        handleBestMove(msg);
+      }
+    };
+
+    function handleBestMove(msg) {
+      const parts = msg.split(" ");
+      const move = parts[1];
+
+      if (move && move.length >= 4) {
+        let from = move.slice(0, 2);
+        let to = move.slice(2, 4);
+        console.log("Stockfish response:", move);
+        let engineFromPieceFullName = getFullPieceName(getCurrentGame().get(from).type);
+        let promotion = move.length > 4 && ['q', 'r', 'b', 'n'].includes(move[4]) ? move[4] : null;
+        let moveResult = getCurrentGame().move({ from: from, to: to, promotion: promotion });
+        displayLastMoveString();
+        updateSelectionPreview();
+
+        if (moveResult.flags.includes('k') || moveResult.flags.includes('q')) {
+          playSound(getEngineColor());
+          playSound("king");
+          playSound("from");
+          playSound(from[0]);
+          playSound(from[1]);
+          playSound("castles");
+          playSound("to");
+          playSound(to[0]);
+          playSound(to[1]);
+        } else {
+          playSound(getEngineColor());
+          playSound(engineFromPieceFullName);
+          playSound('from');
+          playSound(from[0]);
+          playSound(from[1]);
+          if (moveResult.captured) {
+            playSound("takes");
+          } else {
+            playSound('to');
+          }
+          playSound(to[0]);
+          playSound(to[1]);
+        }
+
+        if (moveResult.promotion) {
+          playSound("promoted");
+          playSound("to");
+          playSound(getFullPieceName(moveResult.promotion));
+        }
+
+        if (getCurrentGame().isCheckmate()) {
+          playSound("checkmate");
+        } else if (getCurrentGame().isStalemate()) {
+          playSound("stalemate");
+        } else if (getCurrentGame().inCheck()) {
+          playSound("check");
+        } else if (getCurrentGame().isDraw()) {
+          playSound("draw");
+        }
+      }
+    }
+
+    function displayLastMoveString(s = null) {
+      const lastMovesEl = document.getElementById("lastMoves");
+      if (s === null) {
+        let history = getCurrentGame().history({ verbose: true });
+        let lastPly = history[history.length - 1];
+        if (lastPly) {
+          s =`${getPieceIcon(lastPly.piece, lastPly.color)}${lastPly.from}${lastPly.captured ? 'x' : '-'}${lastPly.to}`;
+          if (lastPly.promotion) {
+            s += `=${getPieceIcon(lastPly.promotion, lastPly.color)}`;
+          }
+          if (getCurrentGame().isCheckmate()) {
+            s += '#';
+          } else if (getCurrentGame().isDraw()) {
+            s += ' ½-½';
+          } else if (getCurrentGame().inCheck()) {
+            s+='+';
+          }
+        } else {
+          s = '';
+        }
+      }
+      lastMovesEl.textContent = s;
+    }
+
+    function onUserMove(from, to) {
+      const move = from + to;
+      let moveResult;
+      const alwaysQueenCheckbox = document.getElementById('alwaysQueen');
+      let isPromotion = getCurrentGame().get(from).type === 'p' && ((getPlayerColor() === 'white' && to[1] === '8') || (getPlayerColor() === 'black' && to[1] === '1'));
+
+      if (isPromotion && !alwaysQueenCheckbox.checked) {
+        promotionPending = true;
+        promotionFromSquare = from;
+        promotionTargetSquare = to;
+        fromSquare = null;
+        moveSequence = [];
+        updateSelectionPreview();
+        renderPromotionChoices(true);
+
+        let isCapture = to[0] != from[0];
+        displayLastMoveString(`${getPieceIcon(getCurrentGame().get(from).type, getPlayerColor()[0])}${from}${isCapture ? 'x' : '-'}${to}=?`);
+         if (isCapture) { 
+          playSound("takes");
+        } else {
+          playSound('to');
+        }
+        playSound(to[0]);
+        playSound(to[1]);
+        playSound("choose-promotion-piece");
+        return "PROMOTION_PENDING";
+      }
+
+      try {
+        moveResult = getCurrentGame().move({ from, to, promotion: isPromotion ? 'q' : undefined });
+      } catch {
+        console.log("Illegal move attempted:", move);
+        showIllegalMoveFeedback(from);
+        fromSquare = null;
+        moveSequence = [];
+        updateSelectionPreview();
+        displayLastMoveString();
+        return "ILLEGAL_MOVE";
+      }
+
+      console.log("User move:", from + "-" + to);
+
+      if (moveResult.flags.includes('k') || moveResult.flags.includes('q')) {
+        playSound("castles");
+        playSound("to");
+        playSound(to[0]);
+        playSound(to[1]);
+        displayLastMoveString(moveResult.flags.includes('k') ? 'o-o …' : 'o-o-o …');
+      } else {
+        displayLastMoveString(`${pieceIcons[fromPiece]}${fromSquare}${moveResult.captured ? 'x' : '-'}${toSquare} …`);
+        if (moveResult.captured) 
+        { 
+          playSound("takes");
+        }
+        else
+        {
+          playSound('to');
+        }
+        playSound(to[0]);
+        playSound(to[1]);
+      }
+
+      if (moveResult.promotion) {
+        playSound("promoted");
+        playSound("to");
+        playSound(getFullPieceName(moveResult.promotion));
+      }
+
+      if (getCurrentGame().isCheckmate()) {
+        playSound("checkmate");
+      } else if (getCurrentGame().isStalemate()) {
+        playSound("stalemate");
+      } else if (getCurrentGame().isDraw()) {
+          playSound("draw");
+      } else {
+        if (getCurrentGame().inCheck()) {
+          playSound("check");
+        }
+      } 
+      return "OK";
+    }
+
+    function handlePromotionSelection(corner) {
+      let promotionPiece = '';
+      let promotionPieceFullName = '';
+
+      switch (corner) {
+        case 'UL':
+          promotionPiece = 'q';
+          promotionPieceFullName = 'queen';
+          break;
+        case 'UR':
+          promotionPiece = 'r';
+          promotionPieceFullName = 'rook';
+          break;
+        case 'DL':
+          promotionPiece = 'b';
+          promotionPieceFullName = 'bishop';
+          break;
+        case 'DR':
+          promotionPiece = 'n';
+          promotionPieceFullName = 'knight';
+          break;
+        default:
+          throw `Corner '${corner}' unknown.`;
+      }
+
+      let moveResult = getCurrentGame().move({ 
+        from: promotionFromSquare, 
+        to: promotionTargetSquare, 
+        promotion: promotionPiece 
+      });
+
+      promotionPending = false;
+      promotionFromSquare = null;
+      promotionTargetSquare = null;
+      renderPromotionChoices(false);
+
+      console.log("User move (promotion):", moveResult.from + "-" + moveResult.to + "=" + moveResult.promotion);
+
+      displayLastMoveString();
+      
+      playSound("promoted");
+      playSound("to");
+      playSound(promotionPieceFullName);
+
+      if (getCurrentGame().isCheckmate()) {
+        playSound("checkmate");
+      } else if (getCurrentGame().isStalemate()) {
+        playSound("stalemate");
+      } else if (getCurrentGame().isDraw()) {
+          playSound("draw");
+      } else {
+        if (getCurrentGame().inCheck()) {
+          playSound("check");
+        }
+        stockfish.postMessage("position fen " + getCurrentGame().fen());
+        stockfish.postMessage(`go depth ${stockfishDepth}`);
+      }
+      updateSelectionPreview();
+    }
+
+    function renderPromotionChoices(show) {
+      const corners = {
+        UL: document.getElementById('ul'),
+        UR: document.getElementById('ur'),
+        DL: document.getElementById('dl'),
+        DR: document.getElementById('dr')
+      };
+      const pieceTypes = {
+        UL: 'q',
+        UR: 'r',
+        DL: 'b',
+        DR: 'n' 
+      };
+
+      for (const cornerId in corners) {
+        const cornerDiv = corners[cornerId];
+        cornerDiv.innerHTML = '';
+
+        if (show) {
+          const pieceIcon = getPieceIcon(pieceTypes[cornerId], getPlayerColor()[0]);
+          const span = document.createElement('span');
+          span.textContent = pieceIcon;
+          cornerDiv.appendChild(span);
+          cornerDiv.classList.add('show-icon');
+        } else {
+          cornerDiv.classList.remove('show-icon');
+        }
+      }
+    }
+
+    function startGame() {
+      simul = parseInt(boardsSelect.value);
+      currentGameIndex = 0;
+      if (!(simul > 1)) {
+        playerColor = document.getElementById('colorSelect').value;
+      }
+      const variant = document.getElementById('variantSelect').value;
+      stockfishDepth = parseInt(document.getElementById('levelSelect').value); 
+      document.getElementById('menu').classList.remove('active');
+      document.getElementById('game').classList.add('active');
+      moveSequence = [];
+      promotionPending = false;
+      promotionFromSquare = null;
+      promotionTargetSquare = null;
+      renderPromotionChoices(false);
+
+      if (variant === '960') {
+        const fen = document.getElementById('variantSelect').dataset.fen;
+        games = [];
+        for (let i = 0; i < simul; i++) {
+          games.push(new Chess(fen, { enable960: true }));
+        }
+        console.log(`Started ${simul} Chess960 games with FEN: ${fen}.`);
+      } else {
+        games = [];
+        for (let i = 0; i < simul; i++) {
+          games.push(new Chess());
+        }
+      }
+      displayLastMoveString('');
+      handleBoardNumberCommunication();
+      if (getPlayerColor() === 'black') {
+        displayLastMoveString('…');
+        stockfish.postMessage("position fen " + getCurrentGame().fen());
+        stockfish.postMessage(`go depth ${stockfishDepth}`);
+      }
+    }
+
+    function showMenu() {
+      document.getElementById('game').classList.remove('active');
+      document.getElementById('menu').classList.add('active');
+      const resumeBtn = document.getElementById('resumeBtn');
+      if (getCurrentGame().history().length > 0) {
+        resumeBtn.classList.remove('hidden');
+      } else {
+        resumeBtn.classList.add('hidden');
+      }
+    }
+
+    function resumeGame() {
+      document.getElementById('menu').classList.remove('active');
+      document.getElementById('game').classList.add('active');
+    }
+
+    function handleTouch(corner) {
+      if (promotionPending) {
+        handlePromotionSelection(corner);
+        return;
+      }
+
+      moveSequence.push(corner);
+      updateSelectionPreview();
+
+      if (moveSequence.length === 3) {
+        const square = getSquare(moveSequence);
+        console.log("Selected square:", square);
+
+        if (!fromSquare) {
+          const pieceData = getCurrentGame().get(square);
+          if (!pieceData || pieceData.color !== getPlayerColor()[0]) {
+            console.log("No valid piece to move from", square);
+            showIllegalMoveFeedback(square);
+            moveSequence = [];
+            updateSelectionPreview();
+            return;
+          }
+          fromPiece = getPlayerColor() == 'white' ? pieceData.type.toUpperCase() : pieceData.type;
+          fromSquare = square;
+          displayLastMoveString(`${pieceIcons[fromPiece]}${fromSquare}-?`);
+          moveSequence = [];
+          playSound(getPlayerColor());
+          playSound(getFullPieceName(pieceData.type));
+          playSound('from');
+          playSound(fromSquare[0]);
+          playSound(fromSquare[1]);
+        } else {
+          toSquare = square;
+          let moveResult = onUserMove(fromSquare, toSquare);
+          fromSquare = null;
+          toSquare = null;
+          moveSequence = [];
+
+          if (moveResult == "OK") {
+            if (isSimul()) {
+              goToNextBoard();
+            } else if (!getCurrentGame().isGameOver()) {
+              stockfish.postMessage("position fen " + getCurrentGame().fen());
+              stockfish.postMessage(`go depth ${stockfishDepth}`);
+            }
+          }
+        }
+      }
+    }
+
+    function getFullPieceName(letter) {
+      switch (letter.toLowerCase()) {
+        case 'p': return 'pawn';
+        case 'r': return 'rook';
+        case 'n': return 'knight';
+        case 'b': return 'bishop';
+        case 'q': return 'queen';
+        case 'k': return 'king';
+        default: throw `Unknown piece letter '${letter}'.`;
+      }
+    }
+
+    function onCancelSelectionClicked() {
+      fromSquare = null;
+      moveSequence = [];
+      promotionPending = false;
+      promotionFromSquare = null;
+      promotionTargetSquare = null;
+      updateSelectionPreview();
+      renderPromotionChoices(false);
+      displayLastMoveString();
+    }
+
+    function getSquare(sequence) {
+      const quadrantMap = { UL: 0, UR: 1, DL: 2, DR: 3 };
+      let row = 0, col = 0;
+      for (let i = 0; i < 3; i++) {
+        const q = quadrantMap[sequence[i]];
+        const rowBit = Math.floor(q / 2);
+        const colBit = q % 2;
+        row = row * 2 + rowBit;
+        col = col * 2 + colBit;
+      }
+      if (getPlayerColor() === 'black') {
+        row = 7 - row;
+        col = 7 - col;
+      }
+      const file = String.fromCharCode(97 + col);
+      const rank = 8 - row;
+      return file + rank;
+    }
+
+    function updateSelectionPreview() {
+      const container = document.getElementById("selectionPreview");
+      container.innerHTML = '';
+
+      if (!promotionPending) {
+        let size = 150;
+        let x = 0;
+        let y = 0;
+
+        const directionMap = {
+          UL: [0, 0],
+          UR: [1, 0],
+          DL: [0, 1],
+          DR: [1, 1],
+        };
+
+        const backgroundColors = fromSquare == null
+            ? ['white', 'lightgreen', 'lightblue', '#FFC300']
+            : ['white', 'yellow', 'pink', 'beige'];
+
+        for (let depth = 0; depth <= moveSequence.length; depth++) {
+          const div = document.createElement("div");
+          div.style.position = "absolute";
+          div.style.backgroundColor = backgroundColors[depth];
+          div.style.boxSizing = "border-box";
+          div.style.width = size + "px";
+          div.style.height = size + "px";
+          div.style.left = x + "px";
+          div.style.top = y + "px";
+
+          container.appendChild(div);
+
+          if (depth < moveSequence.length) {
+            const [dx, dy] = directionMap[moveSequence[depth]];
+            size /= 2;
+            x += dx * size;
+            y += dy * size;
+          }
+        }
+
+        if (fromSquare) {
+          const fileIndex = fromSquare.charCodeAt(0) - 'a'.charCodeAt(0);
+          const rankIndex = 8 - parseInt(fromSquare[1]);
+          const col = getPlayerColor() === 'white' ? fileIndex : 7 - fileIndex;
+          const row = getPlayerColor() === 'white' ? rankIndex : 7 - rankIndex;
+
+          const highlight = document.createElement("div");
+          highlight.style.position = "absolute";
+          highlight.style.backgroundColor = "#FFC300";
+          highlight.style.boxSizing = "border-box";
+          highlight.style.width = "18.75px"; // 150 / 8
+          highlight.style.height = "18.75px";
+          highlight.style.left = `${col * 18.75}px`;
+          highlight.style.top = `${row * 18.75}px`;
+          container.appendChild(highlight);
+        }
+      }
+    }
+
+    function showIllegalMoveFeedback(square) {
+      const overlay = document.getElementById("illegalMoveOverlay");
+      overlay.style.backgroundColor = "red";
+      playSound('illegal-move');
+      setTimeout(() => {
+        overlay.style.backgroundColor = "transparent";
+      }, 1000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const variantSelect = document.getElementById("variantSelect");
+      const fenPreview = document.getElementById("fenPreview");
+
+      variantSelect.addEventListener("change", () => {
+        updateFenPreview();
+      });
+
+      document.getElementById("colorSelect").addEventListener("change", () => {
+        updateFenPreview();
+      });
+
+      function updateFenPreview() {
+        const color = document.getElementById("colorSelect").value;
+        const variant = variantSelect.value;
+        let fen;
+
+        if (variant === "960") {
+          fen = generateChess960Fen();
+          variantSelect.dataset.fen = fen;
+        } else {
+          fen = new Chess().fen();
+          variantSelect.dataset.fen = "";
+        }
+
+        const rank = fen.split(" ")[0].split("/")[color === 'white' ? 7 : 0];
+        const mirrored = color === 'black';
+        let icons = '';
+        for (const char of mirrored ? rank.split('').reverse() : rank) {
+          if (/[1-8]/.test(char)) {
+            icons += '·'.repeat(Number(char));
+          } else {
+            icons += pieceIcons[char] || '?';
+          }
+        }
+
+        document.getElementById("fenPreview").textContent = icons;
+      }
+
+      variantSelect.dispatchEvent(new Event("change"));
+      document.getElementById("startBtn").addEventListener("click", startGame);
+      const boardsSelect = document.getElementById("boardsSelect");
+      const colorSelect = document.getElementById("colorSelect");
+      boardsSelect.addEventListener("change", () => {
+        if (parseInt(boardsSelect.value) > 1) {
+          colorSelect.style.display = 'none';
+        } else {
+          colorSelect.style.display = '';
+        }
+      });
+      document.getElementById("resumeBtn").addEventListener("click", resumeGame);
+      document.getElementById("menuBtn").addEventListener("click", showMenu);
+      document.getElementById("cancelSelectionBtn").addEventListener("click", onCancelSelectionClicked);
+      document.getElementById("undoMoveBtn").addEventListener("click", () => {
+        if (isSimul()) {
+          getCurrentGame().undo(); // undo engine move current board
+          currentGameIndex = previousGameIndex;
+          getCurrentGame().undo(); // undo user move previous board
+        } else {
+          let nrOfPlies = getCurrentGame().history().length;
+          if (nrOfPlies >= 2) {
+            getCurrentGame().undo();
+            getCurrentGame().undo();
+          } else if (nrOfPlies === 1) {
+            getCurrentGame().undo();
+          }
+        }
+        displayLastMoveString();
+        promotionPending = false;
+        promotionFromSquare = null;
+        promotionTargetSquare = null;
+        moveSequence = [];
+        fromSquare = null;
+        updateSelectionPreview();
+        renderPromotionChoices(false);
+        handleBoardNumberCommunication();
+      });
+      document.getElementById("ul").addEventListener("click", () => handleTouch("UL"));
+      document.getElementById("ur").addEventListener("click", () => handleTouch("UR"));
+      document.getElementById("dl").addEventListener("click", () => handleTouch("DL"));
+      document.getElementById("dr").addEventListener("click", () => handleTouch("DR"));
+    });
+  
+    // === Audio Queue System ===
+    let audioQueue = [];
+    let isPlaying = false;
+    let language = 'en'; // Future support for multi-language folders like /audio/nl/, etc.
+
+    function playSound(filename) {
+      audioQueue.push(filename);
+      processAudioQueue();
+    }
+
+    function processAudioQueue() {
+      if (isPlaying || audioQueue.length === 0) return;
+
+      const file = audioQueue.shift();
+      const audio = new Audio(`./audio/${language}/${file}.mp3`);
+      isPlaying = true;
+      audio.play();
+      audio.onended = () => {
+        isPlaying = false;
+        processAudioQueue();
+      };
+    }
+  </script>
+</body>
+</html>
