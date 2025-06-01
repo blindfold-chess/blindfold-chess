@@ -251,6 +251,7 @@
         let nr = currentGameIndex + 1;
         playSound("board");
         playSound(nr.toString());
+        pauseSound();
         boardNrEl.textContent = `Board ${nr}`;
       } else {
         boardNrEl.textContent = '';
@@ -396,7 +397,9 @@
         }
         playSound(to[0]);
         playSound(to[1]);
+        pauseSound();
         playSound("choose-promotion-piece");
+        pauseSound();
         return "PROMOTION_PENDING";
       }
 
@@ -450,7 +453,8 @@
         if (getCurrentGame().inCheck()) {
           playSound("check");
         }
-      } 
+      }
+      pauseSound();
       return "OK";
     }
 
@@ -508,8 +512,12 @@
         if (getCurrentGame().inCheck()) {
           playSound("check");
         }
-        stockfish.postMessage("position fen " + getCurrentGame().fen());
-        stockfish.postMessage(`go depth ${stockfishDepth}`);
+        pauseSound();
+        setTimeout(() => {
+          stockfish.postMessage("position fen " + getCurrentGame().fen());
+          stockfish.postMessage(`go depth ${stockfishDepth}`);
+        }, 500);
+       
       }
       updateSelectionPreview();
     }
@@ -637,12 +645,15 @@
           moveSequence = [];
 
           if (moveResult == "OK") {
-            if (isSimul()) {
-              goToNextBoard();
-            } else if (!getCurrentGame().isGameOver()) {
-              stockfish.postMessage("position fen " + getCurrentGame().fen());
-              stockfish.postMessage(`go depth ${stockfishDepth}`);
-            }
+            setTimeout(() => {
+              if (isSimul()) {
+                goToNextBoard();
+              } else if (!getCurrentGame().isGameOver()) {
+                stockfish.postMessage("position fen " + getCurrentGame().fen());
+                stockfish.postMessage(`go depth ${stockfishDepth}`);
+              }
+            }, 500);
+
           }
         }
       }
@@ -850,12 +861,23 @@
       audioQueue.push(filename);
       processAudioQueue();
     }
+    function pauseSound() {
+      playSound("__pause");
+    }
 
     function processAudioQueue() {
       if (isPlaying || audioQueue.length === 0) return;
 
-      const file = audioQueue.shift();
-      const audio = new Audio(`./audio/${language}/${file}.mp3`);
+      const fileName = audioQueue.shift();
+      if (fileName == "__pause") {
+        isPlaying = true;
+        setTimeout(() => {
+          isPlaying = false;
+          processAudioQueue();
+        }, 500);
+        return;
+      }
+      const audio = new Audio(`./audio/${language}/${fileName}.mp3`);
       isPlaying = true;
       audio.play();
       audio.onended = () => {
