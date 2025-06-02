@@ -512,14 +512,17 @@
         if (getCurrentGame().inCheck()) {
           playSound("check");
         }
-        pauseSound();
-        setTimeout(() => {
+      }
+      pauseSound();
+      setTimeout(() => {
+        updateSelectionPreview();
+        if (isSimul()) {
+          goToNextBoard();
+        } else if (!getCurrentGame().isGameOver()) {
           stockfish.postMessage("position fen " + getCurrentGame().fen());
           stockfish.postMessage(`go depth ${stockfishDepth}`);
-        }, 500);
-       
-      }
-      updateSelectionPreview();
+        }
+      }, 500);
     }
 
     function renderPromotionChoices(show) {
@@ -653,7 +656,6 @@
                 stockfish.postMessage(`go depth ${stockfishDepth}`);
               }
             }, 500);
-
           }
         }
       }
