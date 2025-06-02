@@ -1,45 +1,12 @@
 # chess.js
 
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jhlywa/chess.js/node.js.yml)](https://github.com/jhlywa/chess.js/actions)
-[![npm](https://img.shields.io/npm/v/chess.js?color=blue)](https://www.npmjs.com/package/chess.js)
-[![npm](https://img.shields.io/npm/dm/chess.js)](https://www.npmjs.com/package/chess.js)
+See https://github.com/SymboLinker/chess.js-with-chess960support-merged.
 
 chess.js is a TypeScript chess library used for chess move
 generation/validation, piece placement/movement, and check/checkmate/stalemate
 detection - basically everything but the AI.
 
 chess.js has been extensively tested in node.js and most modern browsers.
-
-## Installation
-
-Run the following command to install the most recent version of chess.js from
-NPM:
-
-```sh
-npm install chess.js
-```
-
-## Importing
-
-### Import (as ESM)
-
-```js
-import { Chess } from 'chess.js'
-```
-
-ECMAScript modules (ESM) can be directly imported in a browser:
-
-```html
-<script type="module">
-  import { Chess } from 'chess.js'
-</script>
-```
-
-### Import (as CommonJS)
-
-```js
-const { Chess } = require('chess.js')
-```
 
 ## Example Code
 
