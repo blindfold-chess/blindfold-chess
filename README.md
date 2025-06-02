@@ -6,7 +6,7 @@ Welcome to the Blindfold Chess app! This application is designed to help you pra
 
 ## 💡 Core Idea: Play Silently
 
-A key feature of this app is its design for silent play. Since there is no voice input required from the user, you can play blindfold chess even in noisy environments or without disturbing others. Simply put on earplugs, and you can enjoy a completely immersive, audio-guided chess experience.
+A key feature of this app is its design for silent play. Since there is no voice input required from the user, you can play blindfold chess even in noisy environments or without disturbing others. Simply put on earplugs, close your eyes, and you can enjoy a completely immersive, audio-guided chess experience.
 
 ## ✨ Key Features
 
