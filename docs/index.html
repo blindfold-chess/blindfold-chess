@@ -279,8 +279,10 @@
       }
 
       handleBoardNumberCommunication();
-      stockfish.postMessage("position fen " + getCurrentGame().fen());
-      stockfish.postMessage(`go depth ${stockfishDepth}`);
+      if (getPlayerColor() == 'black' || getCurrentGame().history().length > 0) {
+        stockfish.postMessage("position fen " + getCurrentGame().fen());
+        stockfish.postMessage(`go depth ${stockfishDepth}`);
+      }
     }
 
     const stockfish = new Worker("./libs/stockfish.js");
@@ -515,6 +517,7 @@
       }
       pauseSound();
       setTimeout(() => {
+        moveSequence = [];
         updateSelectionPreview();
         if (isSimul()) {
           goToNextBoard();
