@@ -571,6 +571,9 @@
       document.getElementById('menu').classList.remove('active');
       document.getElementById('game').classList.add('active');
       moveSequence = [];
+      fromSquare = null;
+      toSquare = null;
+      updateSelectionPreview();
       promotionPending = false;
       promotionFromSquare = null;
       promotionTargetSquare = null;
