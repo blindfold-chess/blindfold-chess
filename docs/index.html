@@ -303,7 +303,6 @@
       if (move && move.length >= 4) {
         let from = move.slice(0, 2);
         let to = move.slice(2, 4);
-        console.log("Stockfish response:", move);
         let engineFromPieceFullName = getFullPieceName(getCurrentGame().get(from).type);
         let promotion = move.length > 4 && ['q', 'r', 'b', 'n'].includes(move[4]) ? move[4] : null;
         let moveResult = getCurrentGame().move({ from: from, to: to, promotion: promotion });
@@ -359,9 +358,14 @@
         let history = getCurrentGame().history({ verbose: true });
         let lastPly = history[history.length - 1];
         if (lastPly) {
-          s =`${getPieceIcon(lastPly.piece, lastPly.color)}${lastPly.from}${lastPly.captured ? 'x' : '-'}${lastPly.to}`;
-          if (lastPly.promotion) {
-            s += `=${getPieceIcon(lastPly.promotion, lastPly.color)}`;
+          if (lastPly.flags.includes('k') || lastPly.flags.includes('q')) {
+            s = `${getPieceIcon(lastPly.piece, lastPly.color)}${lastPly.flags.includes('k') ? 'o-o' : 'o-o-o'}`;
+          }
+          else {
+            s =`${getPieceIcon(lastPly.piece, lastPly.color)}${lastPly.from}${lastPly.captured ? 'x' : '-'}${lastPly.to}`;
+            if (lastPly.promotion) {
+              s += `=${getPieceIcon(lastPly.promotion, lastPly.color)}`;
+            }
           }
           if (getCurrentGame().isCheckmate()) {
             s += '#';
@@ -410,7 +414,6 @@
       try {
         moveResult = getCurrentGame().move({ from, to, promotion: isPromotion ? 'q' : undefined });
       } catch {
-        console.log("Illegal move attempted:", move);
         showIllegalMoveFeedback(from);
         fromSquare = null;
         moveSequence = [];
@@ -419,16 +422,14 @@
         return "ILLEGAL_MOVE";
       }
 
-      console.log("User move:", from + "-" + to);
+      displayLastMoveString();
 
       if (moveResult.flags.includes('k') || moveResult.flags.includes('q')) {
         playSound("castles");
         playSound("to");
         playSound(to[0]);
         playSound(to[1]);
-        displayLastMoveString(moveResult.flags.includes('k') ? 'o-o …' : 'o-o-o …');
       } else {
-        displayLastMoveString(`${pieceIcons[fromPiece]}${fromSquare}${moveResult.captured ? 'x' : '-'}${toSquare} …`);
         if (moveResult.captured) 
         { 
           playSound("takes");
@@ -497,8 +498,6 @@
       promotionFromSquare = null;
       promotionTargetSquare = null;
       renderPromotionChoices(false);
-
-      console.log("User move (promotion):", moveResult.from + "-" + moveResult.to + "=" + moveResult.promotion);
 
       displayLastMoveString();
       
@@ -585,7 +584,6 @@
         for (let i = 0; i < simul; i++) {
           games.push(new Chess(fen, { enable960: true }));
         }
-        console.log(`Started ${simul} Chess960 games with FEN: ${fen}.`);
       } else {
         games = [];
         for (let i = 0; i < simul; i++) {
@@ -595,7 +593,6 @@
       displayLastMoveString('');
       handleBoardNumberCommunication();
       if (getPlayerColor() === 'black') {
-        displayLastMoveString('…');
         stockfish.postMessage("position fen " + getCurrentGame().fen());
         stockfish.postMessage(`go depth ${stockfishDepth}`);
       }
@@ -628,12 +625,10 @@
 
       if (moveSequence.length === 3) {
         const square = getSquare(moveSequence);
-        console.log("Selected square:", square);
 
         if (!fromSquare) {
           const pieceData = getCurrentGame().get(square);
           if (!pieceData || pieceData.color !== getPlayerColor()[0]) {
-            console.log("No valid piece to move from", square);
             showIllegalMoveFeedback(square);
             moveSequence = [];
             updateSelectionPreview();
