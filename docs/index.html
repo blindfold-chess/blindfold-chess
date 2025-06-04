@@ -228,6 +228,7 @@
     let promotionFromSquare = null;
     let promotionTargetSquare = null;
     let stockfishDepth;
+    let stockfish;
 
     function getCurrentGame() {
       return games[currentGameIndex];
@@ -286,15 +287,6 @@
         stockfish.postMessage(`go depth ${stockfishDepth}`);
       }
     }
-
-    const stockfish = new Worker("./libs/stockfish.js");
-
-    stockfish.onmessage = function (event) {
-      const msg = event.data;
-      if (msg.startsWith("bestmove")) {
-        handleBestMove(msg);
-      }
-    };
 
     function handleBestMove(msg) {
       const parts = msg.split(" ");
@@ -560,6 +552,9 @@
     }
 
     function startGame() {
+      initStockfish();
+      audioQueue = [];
+      isPlaying = false;
       simul = parseInt(boardsSelect.value);
       currentGameIndex = 0;
       if (!(simul > 1)) {
@@ -596,6 +591,19 @@
         stockfish.postMessage("position fen " + getCurrentGame().fen());
         stockfish.postMessage(`go depth ${stockfishDepth}`);
       }
+    }
+
+    function initStockfish() {
+      if (stockfish) {
+        stockfish.terminate();
+      }
+      stockfish = new Worker("./libs/stockfish.js");
+      stockfish.onmessage = function (event) {
+        const msg = event.data;
+        if (msg.startsWith("bestmove")) {
+          handleBestMove(msg);
+        }
+      };
     }
 
     function showMenu() {

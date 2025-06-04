@@ -1,0 +1,27 @@
+{
+  "name": "blindfold-chess.github.io-tests",
+  "version": "1.0.0",
+  "description": "Test project for blindfold-chess.github.io.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://symbolinker@github.com/blindfold-chess/blindfold-chess.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blindfold-chess/blindfold-chess.github.io/issues"
+  },
+  "homepage": "https://github.com/blindfold-chess/blindfold-chess.github.io#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.29",
+    "http-server": "^14.1.1"
+  }
+}
