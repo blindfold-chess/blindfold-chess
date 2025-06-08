@@ -266,7 +266,7 @@
     function goToNextBoard() {
       previousGameIndex = currentGameIndex;
       let foundUnfinishedGame = false;
-      for (let i = 1; i < games.length; i++) {
+      for (let i = 1; i <= games.length; i++) {
         currentGameIndex = (currentGameIndex + 1) % games.length;
         if (getCurrentGame().isGameOver()) {
           continue;
@@ -585,6 +585,7 @@
           games.push(new Chess());
         }
       }
+      window.blindfoldchess_games = games;
       displayLastMoveString('');
       handleBoardNumberCommunication();
       if (getPlayerColor() === 'black') {

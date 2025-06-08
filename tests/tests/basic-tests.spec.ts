@@ -12,6 +12,12 @@ const delay = (ms: number): Promise<void> => {
 async function clickCorner(page: Page, cornerId: 'ul' | 'ur' | 'dl' | 'dr') {
   await page.locator(`#${cornerId}`).click();
 }
+type CornerIdType = 'ul' | 'ur' | 'dl' | 'dr';
+async function clickCorners(page: Page, ...cornerIds: CornerIdType[]) {
+  for (let cornerId of cornerIds) {
+    await clickCorner(page, cornerId);
+  }
+}
 
 // Helper to start the game with default settings
 async function startGame(page: Page) {
@@ -44,35 +50,25 @@ test.describe('Blindfold Chess Application Tests', () => {
     let boardNumberText = await getTextContent(page, '#boardNumber');
     expect(boardNumberText).toBe('Board 1');
 
-    // Make a move on Board 1 (e.g., White's pawn e2-e4)
-    await clickCorner(page, 'dr');
-    await clickCorner(page, 'dl');
-    await clickCorner(page, 'ul'); // from e2
+    await clickCorners(page, 'dr', 'dl', 'ul'); // White pawn from e2
 
     // After selecting 'from' square, board number should still be "Board 1"
     boardNumberText = await getTextContent(page, '#boardNumber');
     expect(boardNumberText).toBe('Board 1');
      
-    await clickCorner(page, 'dr');
-    await clickCorner(page, 'ul');
-    await clickCorner(page, 'ul'); // to e4
+    await clickCorners(page, 'dr', 'ul', 'ul'); // to e4
 
     // After completing the move, it should switch to Board 2
     await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === 'Board 2');
     
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/[♙♘].[12]-.+/));
 
-    // Make a move on Board 2 (e.g., Black's pawn d7-d5)
-    await clickCorner(page, 'dr');
-    await clickCorner(page, 'dl');
-    await clickCorner(page, 'ul'); // from d7
+    await clickCorners(page, 'dr', 'dl', 'ul'); // Black pawn from d7
 
     // After selecting 'from' square, board number should still be "Board 2"
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 2');
 
-    await clickCorner(page, 'dr');
-    await clickCorner(page, 'ul');
-    await clickCorner(page, 'ul'); // to d5
+    await clickCorners(page, 'dr', 'ul', 'ul'); // to d5
 
     // After completing the move, it should switch back to Board 1
     await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === 'Board 1');
@@ -85,18 +81,13 @@ test.describe('Blindfold Chess Application Tests', () => {
     let lastMoveString = await getTextContent(page, '#lastMoves');
     expect(lastMoveString).toBe('');
 
-    // Simulate White's first move: e2-e4
-    await clickCorner(page, 'dr');
-    await clickCorner(page, 'dl');
-    await clickCorner(page, 'ul'); // from e2
+    await clickCorners(page, 'dr', 'dl', 'ul'); // White pawn from e2
 
     lastMoveString = await getTextContent(page, '#lastMoves');
     // After selecting 'from' square, it should show the piece and origin
     expect(lastMoveString).toMatch(/♙e2-\?/); // Assuming pawn icon and e2-?
 
-    await clickCorner(page, 'dr');
-    await clickCorner(page, 'ul');
-    await clickCorner(page, 'ul'); // to e4
+    await clickCorners(page, 'dr', 'ul', 'ul'); // to e4
 
     // Even a few milliseconds after the move, it should show the move notation
     await delay(100)
@@ -104,5 +95,148 @@ test.describe('Blindfold Chess Application Tests', () => {
     expect(lastMoveString).toMatch(/♙e2-e4/);
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/[♟♞].[78]-.+/));
+  });
+
+  test('displayLastMoveString should be empty after undoing the first move in a single board game', async ({ page }) => {
+    await startGame(page);
+
+    // Make a move
+    await clickCorners(page, 'dr', 'dl', 'ul'); // from e2
+    await clickCorners(page, 'dr', 'ul', 'ul'); // to e4
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙e2-e4/));
+
+    await page.click('#undoMoveBtn');
+
+    // After undoing, the last move string should be empty
+    const lastMoveString = await getTextContent(page, '#lastMoves');
+    expect(lastMoveString).toBe('');
+  });
+
+  test('cancelSelectionBtn should clear selection and, if first move of white, clear last move string', async ({ page }) => {
+    await startGame(page);
+
+    // Select the from square
+    await clickCorners(page, 'dr', 'dl', 'ul'); // from e2
+
+    expect(await getTextContent(page, '#lastMoves')).toBe('♙e2-?');
+    expect(await page.locator('#selectionPreview div').count()).toBeGreaterThan(1);
+
+    await page.click('#cancelSelectionBtn');
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '');
+    expect(await page.locator('#selectionPreview div').count()).toBe(1);
+  });
+
+  test('cancelSelectionBtn should clear selection and, if not first move, display last opponent move string', async ({ page }) => {
+    await page.selectOption('#colorSelect', 'black');
+    await startGame(page);
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/[♙♘].[12]-.+/));
+    const opponentLastMove = await getTextContent(page, '#lastMoves');
+
+    // Select the from square
+    await clickCorners(page, 'dr', 'dl', 'ul'); // from d7
+
+    expect(await getTextContent(page, '#lastMoves')).toBe('♟d7-?');
+    expect(await page.locator('#selectionPreview div').count()).toBeGreaterThan(1);
+
+    await page.click('#cancelSelectionBtn');
+
+    await page.waitForFunction((x) => document.getElementById('lastMoves')?.textContent == x, opponentLastMove);
+
+    expect(await page.locator('#selectionPreview div').count()).toBe(1);
+  });
+
+  test('displayLastMoveString should reflect promotion to queen - case: the setting [alwaysQueen] is checked', async ({ page }) => {
+    await startGame(page);
+
+    await page.evaluate(() => {
+        // Manipulate the game state to set up a promotion scenario (e.g., white pawn on g7)
+        window.blindfoldchess_games[0].load('8/6P1/8/1k2K3/8/8/8/8 w - - 0 1');
+    });
+
+    // Make the promotion move: g7-g8
+    await clickCorner(page, 'ur');
+    await clickCorner(page, 'ur');
+    await clickCorner(page, 'dl'); // from g7
+
+    await clickCorner(page, 'ur');
+    await clickCorner(page, 'ur');
+    await clickCorner(page, 'ul'); // to g8 (This will trigger promotion to queen because 'alwaysQueen' is checked by default)
+
+    const lastMoveString = await getTextContent(page, '#lastMoves');
+    expect(lastMoveString).toMatch(/♙g7-g8=♕/);
+  });
+
+  test('updateSelectionPreview should show promotion choices during promotion pending', async ({ page }) => {
+    // Disable 'alwaysQueen' for this test to trigger promotion choice
+    await page.evaluate(() => {
+      const alwaysQueenCheckbox = document.getElementById('alwaysQueen') as HTMLInputElement;
+      if (alwaysQueenCheckbox) {
+        alwaysQueenCheckbox.checked = false;
+      }
+    });
+    await startGame(page);
+
+    await page.evaluate(() => {
+        // Manipulate the game state to set up a promotion scenario (e.g., white pawn on g7)
+        window.blindfoldchess_games[0].load('8/6P1/2k5/8/8/2K5/8/8 w - - 0 1'); // One white pawn and two kings.
+    });
+
+    // Make the promotion move: g7-g8
+    await clickCorners(page, 'ur', 'ur', 'dl'); // from g7
+    await clickCorners(page, 'ur', 'ur', 'ul'); // to g8
+
+    // Expect promotion choices to be visible
+    expect(await isVisible(page, '#ul.show-icon span')).toBe(true);
+    expect(await isVisible(page, '#ur.show-icon span')).toBe(true);
+    expect(await isVisible(page, '#dl.show-icon span')).toBe(true);
+    expect(await isVisible(page, '#dr.show-icon span')).toBe(true);
+    expect(await getTextContent(page, '#ul.show-icon span')).toBe('♕');
+    expect(await getTextContent(page, '#ur.show-icon span')).toBe('♖');
+    expect(await getTextContent(page, '#dl.show-icon span')).toBe('♗');
+    expect(await getTextContent(page, '#dr.show-icon span')).toBe('♘');
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙g7-g8=?/));
+
+    // Selection preview should be empty during promotion selection
+    const selectionPreviewContainer = page.locator('#selectionPreview');
+    const divCount = await selectionPreviewContainer.locator('div').count();
+    expect(divCount).toBe(0);
+
+    await clickCorner(page, 'ur'); // Rook chosen
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙g7-g8=♖/));
+    await delay(200);
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙g7-g8=♖/));
+
+    // Black king moves
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♚c6-[b-d][5-7]/));
+  });
+
+  test('should skip drawn board and opponent makes move on first board', async ({ page }) => {
+    await page.selectOption('#boardsSelect', '2');
+    await startGame(page);
+
+    await page.waitForFunction(() => window.blindfoldchess_games && window.blindfoldchess_games.length === 2);
+
+    await page.evaluate(() => {
+        // Board 1: Playable FEN (White to move)
+        window.blindfoldchess_games[0].load('4r3/8/2k5/8/8/2K5/4R3/8 w - - 0 1');
+        // Board 2: Drawn game FEN (Insufficient material for checkmate - two kings and a bishop)
+        window.blindfoldchess_games[1].load('8/8/2k5/8/8/2K5/4B3/8 w - - 0 1');
+    });
+
+    // Verify initial board number is Board 1
+    expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
+
+    // Make a move on Board 1 (White's Rook from e2 takes e8 - assuming default orientation for white)
+    await clickCorners(page, 'dr', 'dl', 'ul'); // From e2 (assuming white's perspective)
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♖e2-?');
+    await clickCorners(page, 'ur', 'ul', 'ul'); // takes e8
+    
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♖e2xe8');
+    expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.startsWith('♚c6-'));
+    expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
   });
 });
