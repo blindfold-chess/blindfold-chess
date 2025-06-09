@@ -281,7 +281,9 @@
       moveSequence = [];
       updateSelectionPreview();
       displayLastMoveString();
-      handleBoardNumberCommunication();
+      if (previousGameIndex != currentGameIndex) {
+        handleBoardNumberCommunication();
+      }
       if (getPlayerColor() == 'black' || getCurrentGame().history().length > 0) {
         stockfish.postMessage("position fen " + getCurrentGame().fen());
         stockfish.postMessage(`go depth ${stockfishDepth}`);
