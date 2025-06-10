@@ -285,9 +285,13 @@
         handleBoardNumberCommunication();
       }
       if (getPlayerColor() == 'black' || getCurrentGame().history().length > 0) {
-        stockfish.postMessage("position fen " + getCurrentGame().fen());
-        stockfish.postMessage(`go depth ${stockfishDepth}`);
+        requestEngineMove();
       }
+    }
+
+    function requestEngineMove() {
+      stockfish.postMessage("position fen " + getCurrentGame().fen());
+      stockfish.postMessage(`go depth ${stockfishDepth}`);
     }
 
     function handleBestMove(msg) {
@@ -517,8 +521,7 @@
         if (isSimul()) {
           goToNextBoard();
         } else if (!getCurrentGame().isGameOver()) {
-          stockfish.postMessage("position fen " + getCurrentGame().fen());
-          stockfish.postMessage(`go depth ${stockfishDepth}`);
+          requestEngineMove();
         }
       }, 500);
     }
@@ -591,8 +594,7 @@
       displayLastMoveString('');
       handleBoardNumberCommunication();
       if (getPlayerColor() === 'black') {
-        stockfish.postMessage("position fen " + getCurrentGame().fen());
-        stockfish.postMessage(`go depth ${stockfishDepth}`);
+        requestEngineMove();
       }
     }
 
@@ -666,8 +668,7 @@
               if (isSimul()) {
                 goToNextBoard();
               } else if (!getCurrentGame().isGameOver()) {
-                stockfish.postMessage("position fen " + getCurrentGame().fen());
-                stockfish.postMessage(`go depth ${stockfishDepth}`);
+                requestEngineMove();
               }
             }, 500);
           }

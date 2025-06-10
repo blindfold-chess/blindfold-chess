@@ -277,4 +277,17 @@ test.describe('Blindfold Chess Application Tests', () => {
     await waitFor(() => interceptedAudioRequests.includes('black') && interceptedAudioRequests.includes('king'));
     expect(interceptedAudioRequests).not.toContain('board');
   });
+
+  test('engine checkmates', async ({ page }) => {
+    await startGame(page);
+    await page.waitForFunction(() => window.blindfoldchess_games && window.blindfoldchess_games.length === 1);
+
+    await page.evaluate(() => {
+        window.blindfoldchess_games[0].load('6r1/1k6/8/8/8/8/7r/K7 w - - 0 1');
+    });
+    await clickCorners(page, 'dl', 'dl', 'dl'); // White king from a1
+    await clickCorners(page, 'dl', 'dl', 'dr'); // to b1
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♜g8-g1#/));
+  });
 });
