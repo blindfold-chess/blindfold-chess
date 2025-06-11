@@ -819,6 +819,7 @@
       const fenPreview = document.getElementById("fenPreview");
 
       variantSelect.addEventListener("change", () => {
+        variantSelect.dataset.fen = generateChess960Fen();
         updateFenPreview();
       });
 
@@ -829,16 +830,7 @@
       function updateFenPreview() {
         const color = document.getElementById("colorSelect").value;
         const variant = variantSelect.value;
-        let fen;
-
-        if (variant === "960") {
-          fen = generateChess960Fen();
-          variantSelect.dataset.fen = fen;
-        } else {
-          fen = new Chess().fen();
-          variantSelect.dataset.fen = "";
-        }
-
+        let fen = variant === "960" ? document.getElementById('variantSelect').dataset.fen : new Chess().fen();
         const rank = fen.split(" ")[0].split("/")[color === 'white' ? 7 : 0];
         const mirrored = color === 'black';
         let icons = '';
