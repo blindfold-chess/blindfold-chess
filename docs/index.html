@@ -229,6 +229,7 @@
     let promotionTargetSquare = null;
     let stockfishDepth;
     let stockfish;
+    let engineMoveCandidates = [];
 
     function getCurrentGame() {
       return games[currentGameIndex];
@@ -290,14 +291,12 @@
     }
 
     function requestEngineMove() {
+      engineMoveCandidates = [];
       stockfish.postMessage("position fen " + getCurrentGame().fen());
       stockfish.postMessage(`go depth ${stockfishDepth}`);
     }
 
-    function handleBestMove(msg) {
-      const parts = msg.split(" ");
-      const move = parts[1];
-
+    function playEngineMove(move) {
       if (move && move.length >= 4) {
         let from = move.slice(0, 2);
         let to = move.slice(2, 4);
@@ -603,10 +602,39 @@
         stockfish.terminate();
       }
       stockfish = new Worker("./libs/stockfish.js");
+      stockfish.postMessage(`setoption name MultiPV value 10`); // Configure Stockfish to output the top 10 moves.
       stockfish.onmessage = function (event) {
         const msg = event.data;
-        if (msg.startsWith("bestmove")) {
-          handleBestMove(msg);
+        if (msg.startsWith("info")) { // The search for moves is ongoing.
+          const parts = msg.split(' ');
+          const multipvIndex = parts.indexOf('multipv');
+          if (multipvIndex === -1) {
+            return;
+          }
+          const multipv = parseInt(parts[multipvIndex + 1]);
+          const pvIndex = parts.indexOf('pv');
+          const scoreIndex = parts.indexOf('score');
+          if (pvIndex !== -1 && scoreIndex !== -1) {
+            const move = parts[pvIndex + 1];
+            const scoreType = parts[scoreIndex + 1]; // 'cp' or 'mate'
+            const scoreValue = parseInt(parts[scoreIndex + 2]);
+            engineMoveCandidates[multipv - 1] = { // Store the latest evaluation for this move index (multipv).
+                move: move,
+                score: scoreType === 'cp' ? scoreValue : null,
+                mate: scoreType === 'mate' ? scoreValue : null
+            };
+          }
+        } else if (msg.startsWith("bestmove")) { // The search for moves is completed.
+          const moves = engineMoveCandidates.filter(m => m); // Filter out any empty array slots in case there are fewer than [multipv value] moves possible.
+          const mateMoves = moves.filter(m => m.mate !== null && m.mate > 0);
+          if (mateMoves.length > 0) {
+            playEngineMove(msg.split(' ')[1]); // In case of a mating move, just do the best move.
+          } else {
+            const bestMovesScore = moves[0].score;
+            const candidateMoves = moves.filter(m => (bestMovesScore - m.score) <= 20); // moves within 20 centipawns of the best move.
+            const move = candidateMoves[Math.floor(Math.random() * candidateMoves.length)].move;
+            playEngineMove(move);
+          }
         }
       };
     }
