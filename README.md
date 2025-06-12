@@ -1,10 +1,10 @@
 # Blindfold Chess App: User Guide
 
-Welcome to the Blindfold Chess app! This application is designed to help you practice and improve your blindfold chess skills by removing the visual board entirely and relying on audio and a unique touch-based input system.
+Welcome to the Blindfold Chess app! This application is designed to help you practice and improve your blindfold chess skills by removing the visual board entirely and relying on a unique touch-based input system and audio feedback.
 
 [![Play the app live here!](https://img.shields.io/badge/Play%20Now-blue?style=for-the-badge)](https://blindfold-chess.github.io)
 
-## 💡 Core Idea: Play Silently
+## 💡 Core Idea: Play Silently with Eyes Closed
 
 A key feature of this app is its design for silent play. Since there is no voice input required from the user, you can play blindfold chess even in noisy environments or without disturbing others. Simply put on earplugs, close your eyes, and you can enjoy a completely immersive, audio-guided chess experience.
 
@@ -52,7 +52,7 @@ A key feature of this app is its design for silent play. Since there is no voice
 
 4.  **Select AI Level (Depth):** Choose a numerical value (1-15) from the "Level" dropdown. This directly sets how many moves deep the Stockfish AI will calculate, with higher numbers indicating a stronger opponent.
 
-5.  **Select Variant:** Choose "Standard" for regular chess or "Chess 960" for a random starting position. The starting rank for Chess 960 will be displayed visually on the menu screen. 
+5.  **Select Variant:** Choose "Standard" for regular chess or "Chess 960" for a random starting position. The starting position will be displayed visually on the menu screen.
 
 6.  **Always Promote to Queen:** By default, this option is checked, meaning your pawns will automatically promote to a Queen. **Uncheck this option** if you want to manually choose your promotion piece (Rook, Bishop, or Knight) during the game.
 
@@ -160,3 +160,16 @@ The app provides audio cues for:
 Enjoy your blindfold chess journey!
 
 [![Play the app live here!](https://img.shields.io/badge/Play%20Now-blue?style=for-the-badge)](https://blindfold-chess.github.io)
+
+# Blindfold Chess App: Creator Guide
+This section is for people interested in **creating chess tools**.
+
+## 📜 Licenses
+
+- The idea of the touch-based input system, with 3 taps to select a square, is unique to this app and owned by Symbolinker. If you're interested in using this idea in your own application/website/etc., please contact me at symbolinker@gmail.com.
+- The file stockfish.js that is used, was downloaded from https://github.com/lichess-org/stockfish.js (the latest release of 2018). For its license, see the official [Stockfish repository](https://github.com/official-stockfish/Stockfish).
+- The file chess.js that is used, was downloaded (as a chess.ts file) from https://github.com/jhlywa/chess.js/pull/493 (at 28-05-2025). For its license, see the [chess.js repository](https://github.com/jhlywa/chess.js).
+
+## 🤝 Contributing
+
+Requests for improvements, bug fixes and new features are welcome. Programmers might start a [discussion](https://github.com/blindfold-chess/blindfold-chess.github.io/discussions), report an [issue](https://github.com/blindfold-chess/blindfold-chess.github.io/issues) or open a [pull request](https://github.com/blindfold-chess/blindfold-chess.github.io/pulls). If you're not a programmer, you can e-mail me at symbolinker@gmail.com and I'll do my best to implement your suggestions.
