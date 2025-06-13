@@ -135,13 +135,15 @@ The app provides audio cues for:
 
 ### Game Controls
 
-* **"Cancel Selection" Button:** If you've started selecting a square but want to reset, tap this button. It will clear your current partial selection.
+During a game, tapping the white square in the center will open a menu with the following options:
 
-* **"Undo Last Move" Button:** Tap this to undo the last full move (your move and the AI's response). In multi-board mode, it will undo the current board's last (AI) move and then switch to the previous board to undo your last move.
+* **"Cancel Selection":** If you've started selecting a square but want to reset, tap this button. It will clear your current partial selection.
 
-* **"Menu" Button:** Returns you to the main menu.
+* **"Undo Last Move":** Tap this to undo the last full move (your move and the AI's response). In multi-board mode, it will undo the current board's last (AI) move and then switch to the previous board to undo your last move.
 
-* **"Resume Game" Button (in Menu):** If you went back to the menu during a game, this button will appear, allowing you to return to your current game.
+* **"Main Menu":** Returns you to the main menu. Here you can review the 960 starting position and then click "Resume Game".
+
+* **"Resume Game":** Returns you to your current game.
 
 ## 🧠 Tips for Blindfold Play
 

@@ -33,11 +33,11 @@
       margin-top: 1em;
     }
     button {
-      margin: 0.5em;
-      font-size: 1.2em;
+      margin: 5px;
+      font-size: 22px;
       background-color: #007bff;
       border-radius: 5px;
-      padding: 5px;
+      padding: 10px;
       width: 250px;
       color: white;
       border: none;
@@ -53,6 +53,19 @@
       left: 0;
       z-index: 10;
     }
+    #gameMenu {
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 35;
+      background-color: rgba(27, 27, 27, 0.9);
+    }
     .touch-corner {
       border: 1px solid #ccc;
       box-sizing: border-box;
@@ -63,34 +76,12 @@
       color: #333;
     }
     .touch-corner span {
-        display: none;
+      display: none;
     }
     .touch-corner.show-icon span {
-        display: block;
-        background-color: white;
-        border-radius: 50%;
-    }
-    #cancelSelectionBtn, #undoMoveBtn {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      font-size: 1.2em;
-      width: 200px;
-    }
-    #cancelSelectionBtn {
-      bottom: 60px;
-    }
-    #undoMoveBtn {
-      bottom: 10px;
-    }
-    #menuBtn {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      font-size: 1.2em;
+      display: block;
+      background-color: white;
+      border-radius: 50%;
     }
     #lastMoves {
       position: absolute;
@@ -100,6 +91,7 @@
       font-size: 1.5em;
       color: #333;
       z-index: 30;
+      pointer-events: none;
     }
     #boardNumber {
       position: absolute;
@@ -109,14 +101,12 @@
       font-size: 2em;
       font-weight: bold;
       color: #333;
-      z-index: 30;    
+      z-index: 30;
+      pointer-events: none;
     }
     h1 {
       margin-bottom: 1em;
       color:#007bff;
-    }
-    #resumeBtn.hidden {
-      display: none;
     }
     #selectionPreview {
       position: absolute;
@@ -135,6 +125,9 @@
       background-color: white;
       border-radius: 10px;
       margin-top: 5px;
+    }
+    #resumeBtn {
+      display: none;
     }
   </style>
 </head>
@@ -195,9 +188,12 @@
     </div>
     <div id="boardNumber">
     </div>
-    <button id="menuBtn">Menu</button>
-    <button id="cancelSelectionBtn">Cancel Selection</button>
-    <button id="undoMoveBtn">Undo Last Move</button>
+    <div id="gameMenu">
+      <button id="cancelSelectionBtn">Cancel Selection</button>
+      <button id="undoMoveBtn">Undo Last Move</button>
+      <button id="menuBtn">Main Menu</button>
+      <button id="gameMenuResumeBtn">Resume Game</button>
+    </div>
   </div>
 
   <script type="module" >
@@ -640,13 +636,14 @@
     }
 
     function showMenu() {
+      toggleVisibilityOfGameMenu();
       document.getElementById('game').classList.remove('active');
       document.getElementById('menu').classList.add('active');
       const resumeBtn = document.getElementById('resumeBtn');
       if (getCurrentGame().history().length > 0) {
-        resumeBtn.classList.remove('hidden');
+        resumeBtn.style.display = 'block';
       } else {
-        resumeBtn.classList.add('hidden');
+        resumeBtn.style.display = 'none';
       }
     }
 
@@ -717,6 +714,7 @@
     }
 
     function onCancelSelectionClicked() {
+      toggleVisibilityOfGameMenu();
       fromSquare = null;
       moveSequence = [];
       promotionPending = false;
@@ -814,6 +812,11 @@
       }, 1000);
     }
 
+    function toggleVisibilityOfGameMenu() {
+      const gameMenu = document.getElementById("gameMenu");
+      gameMenu.style.display = gameMenu.style.display === "flex" ? "none" : "flex";
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       const variantSelect = document.getElementById("variantSelect");
       const fenPreview = document.getElementById("fenPreview");
@@ -860,6 +863,7 @@
       document.getElementById("menuBtn").addEventListener("click", showMenu);
       document.getElementById("cancelSelectionBtn").addEventListener("click", onCancelSelectionClicked);
       document.getElementById("undoMoveBtn").addEventListener("click", () => {
+        toggleVisibilityOfGameMenu();
         if (isSimul()) {
           getCurrentGame().undo(); // undo engine move current board
           currentGameIndex = previousGameIndex;
@@ -883,6 +887,8 @@
         renderPromotionChoices(false);
         handleBoardNumberCommunication();
       });
+      document.getElementById("selectionPreview").addEventListener("click", () => toggleVisibilityOfGameMenu());
+      document.getElementById("gameMenuResumeBtn").addEventListener("click", () => toggleVisibilityOfGameMenu());
       document.getElementById("ul").addEventListener("click", () => handleTouch("UL"));
       document.getElementById("ur").addEventListener("click", () => handleTouch("UR"));
       document.getElementById("dl").addEventListener("click", () => handleTouch("DL"));
