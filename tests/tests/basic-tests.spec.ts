@@ -112,6 +112,7 @@ test.describe('Blindfold Chess Application Tests', () => {
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙e2-e4/));
 
+    await page.click('#selectionPreview');
     await page.click('#undoMoveBtn');
 
     // After undoing, the last move string should be empty
@@ -128,6 +129,7 @@ test.describe('Blindfold Chess Application Tests', () => {
     expect(await getTextContent(page, '#lastMoves')).toBe('♙e2-?');
     expect(await page.locator('#selectionPreview div').count()).toBeGreaterThan(1);
 
+    await page.click('#selectionPreview');
     await page.click('#cancelSelectionBtn');
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '');
@@ -146,6 +148,7 @@ test.describe('Blindfold Chess Application Tests', () => {
     expect(await getTextContent(page, '#lastMoves')).toBe('♟d7-?');
     expect(await page.locator('#selectionPreview div').count()).toBeGreaterThan(1);
 
+    await page.click('#selectionPreview');
     await page.click('#cancelSelectionBtn');
 
     await page.waitForFunction((x) => document.getElementById('lastMoves')?.textContent == x, opponentLastMove);
