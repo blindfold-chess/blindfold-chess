@@ -66,6 +66,51 @@
       z-index: 35;
       background-color: rgba(27, 27, 27, 0.9);
     }
+    #thinkingIndicator {
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      z-index:100;
+      background-color: rgba(27, 27, 27, 0.8);
+      color: #007bff;
+      padding: 3vmin;
+      font-size: 10vmin;
+    }
+    .spinner-ul, .spinner-ur, .spinner-dl, .spinner-dr {
+      border: 1vmin solid rgba(0, 0, 0, 0);
+      border-top: 1vmin solid #007bff;
+      border-radius: 50%;
+      width: 10vmin;
+      height: 10vmin;
+      animation: spin 1s linear infinite;
+    }
+    .spinner-ul {
+      position: absolute;
+      top: 10vmin;
+      left: 10vmin;
+    }
+    .spinner-ur {
+      position: absolute;
+      top: 10vmin;
+      right: 20vmin;
+    }
+    .spinner-dl {
+      position: absolute;
+      bottom: 20vmin;
+      left: 10vmin;
+    }
+    .spinner-dr {
+      position: absolute;
+      bottom: 20vmin;
+      right: 20vmin;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     .touch-corner {
       border: 1px solid #ccc;
       box-sizing: border-box;
@@ -194,6 +239,12 @@
       <button id="menuBtn">Main Menu</button>
       <button id="gameMenuResumeBtn">Resume Game</button>
     </div>
+    <div id="thinkingIndicator">
+      <div class="spinner-ul"></div>
+      <div class="spinner-ur"></div>
+      <div class="spinner-dl"></div>
+      <div class="spinner-dr"></div>
+    </div>
   </div>
 
   <script type="module" >
@@ -288,6 +339,7 @@
 
     function requestEngineMove() {
       engineMoveCandidates = [];
+      document.getElementById("thinkingIndicator").style.display = "block";
       stockfish.postMessage("position fen " + getCurrentGame().fen());
       stockfish.postMessage(`go depth ${stockfishDepth}`);
     }
@@ -299,6 +351,7 @@
         let engineFromPieceFullName = getFullPieceName(getCurrentGame().get(from).type);
         let promotion = move.length > 4 && ['q', 'r', 'b', 'n'].includes(move[4]) ? move[4] : null;
         let moveResult = getCurrentGame().move({ from: from, to: to, promotion: promotion });
+        document.getElementById("thinkingIndicator").style.display = "none";
         displayLastMoveString();
         updateSelectionPreview();
 
