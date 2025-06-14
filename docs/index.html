@@ -571,7 +571,7 @@
         } else if (!getCurrentGame().isGameOver()) {
           requestEngineMove();
         }
-      }, 500);
+      }, 1000);
     }
 
     function renderPromotionChoices(show) {
@@ -748,7 +748,7 @@
               } else if (!getCurrentGame().isGameOver()) {
                 requestEngineMove();
               }
-            }, 500);
+            }, 1000);
           }
         }
       }
@@ -864,6 +864,15 @@
         overlay.style.backgroundColor = "transparent";
       }, 1000);
     }
+
+    window.addEventListener('beforeunload', function (e) {
+      if (document.getElementById('game').classList.contains('active')) {
+        toggleVisibilityOfGameMenu();
+        e.preventDefault();
+        e.returnValue = 'Accidentally closing the app during the game was prevented. You can exit from the main menu.';
+        return;
+      }
+    });
 
     function toggleVisibilityOfGameMenu() {
       const gameMenu = document.getElementById("gameMenu");
