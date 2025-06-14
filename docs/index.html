@@ -74,7 +74,7 @@
       left: 0;
       display: none;
       z-index:100;
-      background-color: rgba(27, 27, 27, 0.8);
+      background-color: rgba(0, 0, 0, 0.5);
       color: #007bff;
       padding: 3vmin;
       font-size: 10vmin;
@@ -118,7 +118,7 @@
       justify-content: center;
       align-items: center;
       font-size: 6em;
-      color: #333;
+      color: black;
     }
     .touch-corner span {
       display: none;
@@ -130,22 +130,22 @@
     }
     #lastMoves {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50vh;
+      left: 50vw;
       transform: translate(-50%, -50%);
       font-size: 1.5em;
-      color: #333;
+      color: black;
       z-index: 30;
       pointer-events: none;
     }
     #boardNumber {
       position: absolute;
-      top: calc(50% - 50px);
-      left: 50%;
+      top: calc(50vh - 50px);
+      left: 50vw;
       transform: translate(-50%, -50%);
       font-size: 2em;
       font-weight: bold;
-      color: #333;
+      color: black;
       z-index: 30;
       pointer-events: none;
     }
@@ -155,8 +155,8 @@
     }
     #selectionPreview {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50vh;
+      left: 50vw;
       width: 150px;
       height: 150px;
       transform: translate(-50%, -50%);
