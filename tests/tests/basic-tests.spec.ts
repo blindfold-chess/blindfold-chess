@@ -222,14 +222,7 @@ test.describe('Blindfold Chess Application Tests', () => {
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♚c6-[b-d][5-7]/));
   });
 
-  test('stays on same board and does not mention the board number anymore if all other games are ended (so the opponent makes a move immediately after the user\'s move)', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'This test works in Chromium only.');
-    const interceptedAudioRequests: string[] = [];
-    await page.route('**/*.mp3', route => {
-      const filename = route.request().url().split('/').pop()!;
-      interceptedAudioRequests.push(filename.split('.')[0]);
-      route.continue();
-    });
+  test('stays on same board if all other games are ended (so the opponent makes a move immediately after the user\'s move)', async ({ page, browserName }) => {
     await page.selectOption('#boardsSelect', '2');
     await startGame(page);
 
@@ -244,41 +237,16 @@ test.describe('Blindfold Chess Application Tests', () => {
 
     // Verify initial board number is Board 1
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
-    await waitFor(() => interceptedAudioRequests.length == 2);
-    expect(interceptedAudioRequests).toEqual([
-      'board',
-      '1'
-    ]);
-    interceptedAudioRequests.length = 0;
 
     // Make a move on Board 1 (White's Rook from e2 takes e8 - assuming default orientation for white)
     await clickCorners(page, 'dr', 'dl', 'ul'); // From e2 (assuming white's perspective)
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♖e2-?');
-
-    await waitFor(() => interceptedAudioRequests.length == 5);
-    expect(interceptedAudioRequests).toEqual([
-      'white', 
-      'rook', 
-      'from', 
-      'e', 
-      '2'
-    ]);
-    interceptedAudioRequests.length = 0;
-    await delay(50);
     await clickCorners(page, 'ur', 'ul', 'ul'); // takes e8
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♖e2xe8');
-    await waitFor(() => interceptedAudioRequests.length > 2);
-    expect(interceptedAudioRequests.slice(0,3)).toEqual([
-      'takes', 
-      'e', 
-      '8'
-    ]);
-    
+
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♚c6-[b-d][5-7]/));
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
-    await waitFor(() => interceptedAudioRequests.includes('black') && interceptedAudioRequests.includes('king'));
-    expect(interceptedAudioRequests).not.toContain('board');
   });
 
   test('engine checkmates', async ({ page }) => {

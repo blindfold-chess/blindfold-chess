@@ -879,9 +879,11 @@
       gameMenu.style.display = gameMenu.style.display === "flex" ? "none" : "flex";
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const variantSelect = document.getElementById("variantSelect");
       const fenPreview = document.getElementById("fenPreview");
+
+      await preLoadAudio();
 
       variantSelect.addEventListener("change", () => {
         variantSelect.dataset.fen = generateChess960Fen();
@@ -958,9 +960,45 @@
     });
   
     // === Audio Queue System ===
+    const fileNames = [
+      "board", "white", "black", "king", "queen", "rook", "bishop", "knight", "pawn",
+      "from", "to", "takes", "check", "checkmate", "stalemate", "draw",
+      "castles", "promoted", "choose-promotion-piece",
+      "illegal-move",
+      "a", "b", "c", "d", "e", "f", "g", "h",
+      "1", "2", "3", "4", "5", "6", "7", "8",
+    ];
+    const audioMap = {};
+    let audioPreloaded = false;
+
+    async function preLoadAudio() {
+      if (audioPreloaded) return;
+      
+      const thinkingIndicator = document.getElementById("thinkingIndicator");
+      thinkingIndicator.style.display = "flex";
+      const loadingText = thinkingIndicator.querySelector('p');
+      if (loadingText) loadingText.textContent = "Loading Audio...";
+
+      const audioPromises = fileNames.map(fileName => {
+        return new Promise(resolve => {
+          const audio = new Audio(`./audio/${language}/${fileName}.mp3`);
+          audio.preload = "auto";
+          audio.oncanplaythrough = () => {
+            audioMap[fileName] = audio;
+            resolve();
+          };
+        });
+      });
+
+      await Promise.all(audioPromises);
+
+      thinkingIndicator.style.display = "none";
+      audioPreloaded = true;
+    }
+
     let audioQueue = [];
     let isPlaying = false;
-    let language = 'en'; // Future support for multi-language folders like /audio/nl/, etc.
+    let language = 'en';
 
     function playSound(filename) {
       audioQueue.push(filename);
@@ -982,8 +1020,9 @@
         }, 500);
         return;
       }
-      const audio = new Audio(`./audio/${language}/${fileName}.mp3`);
+      const audio = audioMap[fileName];
       isPlaying = true;
+      audio.currentTime = 0;
       audio.play();
       audio.onended = () => {
         isPlaying = false;
