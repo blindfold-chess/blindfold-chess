@@ -879,12 +879,8 @@
       gameMenu.style.display = gameMenu.style.display === "flex" ? "none" : "flex";
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("DOMContentLoaded", async () => {    
       const variantSelect = document.getElementById("variantSelect");
-      const fenPreview = document.getElementById("fenPreview");
-
-      await preLoadAudio();
-
       variantSelect.addEventListener("change", () => {
         variantSelect.dataset.fen = generateChess960Fen();
         updateFenPreview();
@@ -913,6 +909,9 @@
       }
 
       variantSelect.dispatchEvent(new Event("change"));
+
+      await preLoadAudio();
+
       document.getElementById("startBtn").addEventListener("click", startGame);
       const boardsSelect = document.getElementById("boardsSelect");
       const colorSelect = document.getElementById("colorSelect");
