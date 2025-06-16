@@ -58,6 +58,18 @@ A key feature of this app is its design for silent play. Since there is no voice
 
 7.  **Start Game:** Tap the "Start Game" button.
 
+### Using the Game Menu
+
+During a game, tapping the white square in the center will open a menu with the following options:
+
+* **"Cancel Selection":** If you've started selecting a square but want to reset, tap this button. It will clear your current partial selection.
+
+* **"Undo Last Move":** Tap this to undo the last full move (your move and the AI's response). In multi-board mode, it will undo the current board's last (AI) move and then switch to the previous board to undo your last move.
+
+* **"Main Menu":** Returns you to the main menu. Here you can review the 960 starting position and then click "Resume Game".
+
+* **"Resume Game":** Returns you to your current game.
+
 ### Making a Move (Square Selection)
 
 The game screen consists of four large, touchable quadrants:
@@ -119,31 +131,6 @@ If your pawn reaches the last rank and you have **unchecked** the "Always promot
 
     * The app will confirm your choice by finishing the move sentence with - for example - "promoted to Queen". The full sentence that you've heard, might then be: "White pawn from f7 takes g8 - choose a promotion piece - promoted to Queen".
 
-### Game State Announcements
-
-The app provides audio cues for:
-
-* **"Check"**: When a king is under attack.
-
-* **"Checkmate"**: When a king is in check and has no legal moves.
-
-* **"Stalemate"**: When a player has no legal moves, but their king is not in check (a draw).
-
-* **"Draw"**: For other draw conditions (e.g. insufficient material, 50-move rule, 3-fold repetition).
-
-* **"Board [Number]"**: Announced when switching between boards in simultaneous play.
-
-### Game Controls
-
-During a game, tapping the white square in the center will open a menu with the following options:
-
-* **"Cancel Selection":** If you've started selecting a square but want to reset, tap this button. It will clear your current partial selection.
-
-* **"Undo Last Move":** Tap this to undo the last full move (your move and the AI's response). In multi-board mode, it will undo the current board's last (AI) move and then switch to the previous board to undo your last move.
-
-* **"Main Menu":** Returns you to the main menu. Here you can review the 960 starting position and then click "Resume Game".
-
-* **"Resume Game":** Returns you to your current game.
 
 ## 🧠 Tips for Blindfold Play
 
