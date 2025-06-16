@@ -932,12 +932,10 @@
           currentGameIndex = previousGameIndex;
           getCurrentGame().undo(); // undo user move previous board
         } else {
-          let nrOfPlies = getCurrentGame().history().length;
-          if (nrOfPlies >= 2) {
-            getCurrentGame().undo();
-            getCurrentGame().undo();
-          } else if (nrOfPlies === 1) {
-            getCurrentGame().undo();
+          getCurrentGame().undo(); // unless the user ended the game (via checkmate or a draw), the last move is the engine's move, because the 'Undo Move' button can only be clicked after the engine's move.
+          let isUserTurn = getPlayerColor().startsWith(getCurrentGame().turn());
+          if (!isUserTurn) { // the previously undone move was the engine's move.
+            getCurrentGame().undo(); // undo user move.
           }
         }
         displayLastMoveString();

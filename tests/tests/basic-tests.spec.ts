@@ -261,4 +261,49 @@ test.describe('Blindfold Chess Application Tests', () => {
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♜g8-g1#/));
   });
+
+  test('undoing a game-ending half-move by the user', async ({ page }) => {
+    await startGame(page);
+    await page.waitForFunction(() => window.blindfoldchess_games && window.blindfoldchess_games.length === 1);
+    await page.evaluate(() => {
+        window.blindfoldchess_games[0].load('k7/7Q/2K5/8/8/8/8/8 w - - 0 1');
+    });
+    await clickCorners(page, 'ur', 'ur', 'dr'); // White queen from h7
+    await clickCorners(page, 'ur', 'ur', 'dl'); // to g7
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
+
+    await clickCorners(page, 'ur', 'ur', 'dl'); // White queen from g7
+    await clickCorners(page, 'ul', 'ul', 'dr'); // to b7, checkmate.
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♕g7-b7#');
+
+    await page.click('#selectionPreview'); // open the game menu.
+    await page.click('#undoMoveBtn'); // undo user's last move, but not the engine's move.
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
+  });
+
+  test('undoing 2 half-moves: engine and user move', async ({ page }) => {
+    await startGame(page);
+    await page.waitForFunction(() => window.blindfoldchess_games && window.blindfoldchess_games.length === 1);
+    await page.evaluate(() => {
+        window.blindfoldchess_games[0].load('k7/7Q/2K5/8/8/8/8/8 w - - 0 1');
+    });
+    await clickCorners(page, 'ur', 'ur', 'dr'); // White queen from h7
+    await clickCorners(page, 'ur', 'ur', 'dl'); // to g7
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
+
+    await clickCorners(page, 'ur', 'ur', 'dl'); // White queen from g7
+    await clickCorners(page, 'ul', 'ur', 'dl'); // to c7, check.
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♕g7-c7+');
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚b8-a8');
+
+    await page.click('#selectionPreview'); // open the game menu.
+    await page.click('#undoMoveBtn'); // undo the last engine move and user move.
+
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
+  });
 });
