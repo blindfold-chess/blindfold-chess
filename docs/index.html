@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blindfold Chess</title>
+  <title>Blindfold Chess App</title>
   <style>
     html, body {
       margin: 0;
@@ -170,9 +170,22 @@
       background-color: white;
       border-radius: 10px;
       margin-top: 5px;
+      font-size: 2em; 
+      font-family: sans-serif; 
+      text-align: center
     }
     #resumeBtn {
       display: none;
+    }
+    #illegalMoveOverlay {
+      position: absolute; 
+      top: 50vh; 
+      left: 50vw; 
+      width: 150px; 
+      height: 150px; 
+      transform: translate(-50%, -50%); 
+      z-index: 26; 
+      pointer-events: none;
     }
   </style>
 </head>
@@ -209,7 +222,7 @@
       <option value="standard">Variant: Standard</option>
       <option value="960">Variant: 960</option>
     </select>
-    <div id="fenPreview" style="font-size: 2em; font-family: sans-serif; text-align: center"></div>
+    <div id="fenPreview"></div>
     <label style="margin-top: 35px; margin-bottom: 25px; color: white">
       <input type="checkbox" id="alwaysQueen" checked> Always promote to queen
     </label>
@@ -225,7 +238,7 @@
       <div class="touch-corner" id="dl"></div>
       <div class="touch-corner" id="dr"></div>
     </div>
-    <div id="illegalMoveOverlay" style="position: absolute; top: 50vh; left: 50vw; width: 150px; height: 150px; transform: translate(-50%, -50%); z-index: 26; pointer-events: none;">
+    <div id="illegalMoveOverlay">
     </div>
     <div id="selectionPreview">
     </div>
@@ -499,11 +512,9 @@
       } else if (getCurrentGame().isStalemate()) {
         playSound("stalemate");
       } else if (getCurrentGame().isDraw()) {
-          playSound("draw");
-      } else {
-        if (getCurrentGame().inCheck()) {
-          playSound("check");
-        }
+        playSound("draw");
+      } else if (getCurrentGame().inCheck()) {
+        playSound("check");
       }
       pauseSound();
       return "OK";
@@ -556,11 +567,9 @@
       } else if (getCurrentGame().isStalemate()) {
         playSound("stalemate");
       } else if (getCurrentGame().isDraw()) {
-          playSound("draw");
-      } else {
-        if (getCurrentGame().inCheck()) {
-          playSound("check");
-        }
+        playSound("draw");
+      } else if (getCurrentGame().inCheck()) {
+        playSound("check");
       }
       pauseSound();
       setTimeout(() => {
@@ -972,9 +981,7 @@
       if (audioPreloaded) return;
       
       const thinkingIndicator = document.getElementById("thinkingIndicator");
-      thinkingIndicator.style.display = "flex";
-      const loadingText = thinkingIndicator.querySelector('p');
-      if (loadingText) loadingText.textContent = "Loading Audio...";
+      thinkingIndicator.style.display = "block";
 
       const audioPromises = fileNames.map(fileName => {
         return new Promise(resolve => {

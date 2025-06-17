@@ -306,4 +306,44 @@ test.describe('Blindfold Chess Application Tests', () => {
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
   });
+
+  test('draw by repetition (3 times same postion)', async ({ page }) => {
+    await startGame(page);
+    await page.waitForFunction(() => window.blindfoldchess_games && window.blindfoldchess_games.length === 1);
+    await page.evaluate(() => {
+        window.blindfoldchess_games[0].load('k7/3Q4/8/8/8/8/8/K7 w - - 0 1');
+    });
+
+    await clickCorners(page, 'dl', 'dl', 'dl'); // White king from a1
+    await clickCorners(page, 'dl', 'dl', 'dr'); // to b1
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♔a1-b1');
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
+
+    await clickCorners(page, 'dl', 'dl', 'dr'); // White king from b1
+    await clickCorners(page, 'dl', 'dl', 'dl'); // to a1
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♔b1-a1');
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚b8-a8');
+    
+    await clickCorners(page, 'dl', 'dl', 'dl'); // White king from a1
+    await clickCorners(page, 'dl', 'dl', 'dr'); // to b1
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♔a1-b1');
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
+
+    await clickCorners(page, 'dl', 'dl', 'dr'); // White king from b1
+    await clickCorners(page, 'dl', 'dl', 'dl'); // to a1
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♔b1-a1');
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚b8-a8 ½-½');
+  });
+
+  test('draw by stalemate', async ({ page }) => {
+    await startGame(page);
+    await page.waitForFunction(() => window.blindfoldchess_games && window.blindfoldchess_games.length === 1);
+    await page.evaluate(() => {
+        window.blindfoldchess_games[0].load('k7/3Q4/8/8/8/8/8/K7 w - - 0 1');
+    });
+
+    await clickCorners(page, 'ul', 'ur', 'dr'); // White queen from d7
+    await clickCorners(page, 'ul', 'ur', 'dl'); // to c7
+    await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♕d7-c7 ½-½');
+  });
 });
