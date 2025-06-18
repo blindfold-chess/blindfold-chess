@@ -78,17 +78,17 @@ The game screen consists of four large, touchable quadrants:
 
 * **UR** (Upper Right)
 
-* **DL** (Lower Left)
+* **BL** (Bottom Left)
 
-* **DR** (Lower Right)
+* **BR** (Bottom Right)
 
 When you use the app in full-screen mode, you can use your thumbs to tap these quadrants. To select any square of the 8x8 chessboard, you will make **three consecutive taps** on these quadrants. Each tap narrows down the selection to a smaller quadrant, eventually pinpointing a single square. Visual help is provided during play to get acquainted with this system.
 
-**Example 1: tapping DR DL UL selects E2 (for White)**
+**Example 1: tapping BR BL UL selects E2 (for White)**
 
-* **Tap 1 (DR):** Selects the lower-right 4x4 quadrant (**e1-h4**).
+* **Tap 1 (BR):** Selects the lower-right 4x4 quadrant (**e1-h4**).
 
-* **Tap 2 (DL):** Selects the lower-left 2x2 quadrant (**e1-f2**) within the previous 4x4 (e1-h4).
+* **Tap 2 (BL):** Selects the lower-left 2x2 quadrant (**e1-f2**) within the previous 4x4 (e1-h4).
 
 * **Tap 3 (UL):** Selects the upper-left 1x1 square (**e2**) within the previous 2x2 (e1-f2).
 
@@ -97,7 +97,7 @@ When you use the app in full-screen mode, you can use your thumbs to tap these q
 **Other examples:**
 
 * UR UR UR selects h8 (or a1 if you have the black pieces).
-* UL DR DR selects d5 (or e4 if you have the black pieces).
+* UL BR BR selects d5 (or e4 if you have the black pieces).
 
 **Steps to Make a Move:**
 
@@ -123,9 +123,9 @@ If your pawn reaches the last rank and you have **unchecked** the "Always promot
 
     * **Upper Right: Rook**
 
-    * **Lower Left: Bishop**
+    * **Bottom Left: Bishop**
 
-    * **Lower Right: Knight**
+    * **Bottom Right: Knight**
 
 3.  Tap the quadrant corresponding to the piece you wish to promote to.
 

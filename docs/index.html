@@ -83,7 +83,7 @@
       padding: 3vmin;
       font-size: 10vmin;
     }
-    .spinner-ul, .spinner-ur, .spinner-dl, .spinner-dr {
+    .spinner-ul, .spinner-ur, .spinner-bl, .spinner-br {
       border: 1vmin solid rgba(0, 0, 0, 0);
       border-top: 1vmin solid #007bff;
       border-radius: 50%;
@@ -101,12 +101,12 @@
       top: 10vmin;
       right: 20vmin;
     }
-    .spinner-dl {
+    .spinner-bl {
       position: absolute;
       bottom: 20vmin;
       left: 10vmin;
     }
-    .spinner-dr {
+    .spinner-br {
       position: absolute;
       bottom: 20vmin;
       right: 20vmin;
@@ -239,8 +239,8 @@
     <div id="touchOverlay">
       <div class="touch-corner" id="ul"></div>
       <div class="touch-corner" id="ur"></div>
-      <div class="touch-corner" id="dl"></div>
-      <div class="touch-corner" id="dr"></div>
+      <div class="touch-corner" id="bl"></div>
+      <div class="touch-corner" id="br"></div>
     </div>
     <div id="illegalMoveOverlay">
     </div>
@@ -259,8 +259,8 @@
     <div id="thinkingIndicator">
       <div class="spinner-ul"></div>
       <div class="spinner-ur"></div>
-      <div class="spinner-dl"></div>
-      <div class="spinner-dr"></div>
+      <div class="spinner-bl"></div>
+      <div class="spinner-br"></div>
     </div>
   </div>
 
@@ -537,11 +537,11 @@
           promotionPiece = 'r';
           promotionPieceFullName = 'rook';
           break;
-        case 'DL':
+        case 'BL':
           promotionPiece = 'b';
           promotionPieceFullName = 'bishop';
           break;
-        case 'DR':
+        case 'BR':
           promotionPiece = 'n';
           promotionPieceFullName = 'knight';
           break;
@@ -591,14 +591,14 @@
       const corners = {
         UL: document.getElementById('ul'),
         UR: document.getElementById('ur'),
-        DL: document.getElementById('dl'),
-        DR: document.getElementById('dr')
+        BL: document.getElementById('bl'),
+        BR: document.getElementById('br')
       };
       const pieceTypes = {
         UL: 'q',
         UR: 'r',
-        DL: 'b',
-        DR: 'n'
+        BL: 'b',
+        BR: 'n'
       };
 
       for (const cornerId in corners) {
@@ -792,7 +792,7 @@
     }
 
     function getSquare(sequence) {
-      const quadrantMap = { UL: 0, UR: 1, DL: 2, DR: 3 };
+      const quadrantMap = { UL: 0, UR: 1, BL: 2, BR: 3 };
       let row = 0, col = 0;
       for (let i = 0; i < 3; i++) {
         const q = quadrantMap[sequence[i]];
@@ -822,8 +822,8 @@
         const directionMap = {
           UL: [0, 0],
           UR: [1, 0],
-          DL: [0, 1],
-          DR: [1, 1],
+          BL: [0, 1],
+          BR: [1, 1],
         };
 
         const backgroundColors = fromSquare == null
@@ -978,8 +978,8 @@
       document.getElementById("gameMenuResumeBtn").addEventListener("click", () => toggleVisibilityOfGameMenu());
       document.getElementById("ul").addEventListener("click", () => handleTouch("UL"));
       document.getElementById("ur").addEventListener("click", () => handleTouch("UR"));
-      document.getElementById("dl").addEventListener("click", () => handleTouch("DL"));
-      document.getElementById("dr").addEventListener("click", () => handleTouch("DR"));
+      document.getElementById("bl").addEventListener("click", () => handleTouch("BL"));
+      document.getElementById("br").addEventListener("click", () => handleTouch("BR"));
     });
 
     // === Audio Queue System ===
