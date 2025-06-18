@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blindfold Chess App</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
+  <link rel="manifest" href="./site.webmanifest">
   <style>
     html, body {
       margin: 0;
@@ -174,21 +174,21 @@
       background-color: white;
       border-radius: 10px;
       margin-top: 5px;
-      font-size: 2em; 
-      font-family: sans-serif; 
+      font-size: 2em;
+      font-family: sans-serif;
       text-align: center
     }
     #resumeBtn {
       display: none;
     }
     #illegalMoveOverlay {
-      position: absolute; 
-      top: 50vh; 
-      left: 50vw; 
-      width: 150px; 
-      height: 150px; 
-      transform: translate(-50%, -50%); 
-      z-index: 26; 
+      position: absolute;
+      top: 50vh;
+      left: 50vw;
+      width: 150px;
+      height: 150px;
+      transform: translate(-50%, -50%);
+      z-index: 26;
       pointer-events: none;
     }
   </style>
@@ -461,7 +461,7 @@
 
         let isCapture = to[0] != from[0];
         displayLastMoveString(`${getPieceIcon(getCurrentGame().get(from).type, getPlayerColor()[0])}${from}${isCapture ? 'x' : '-'}${to}=?`);
-         if (isCapture) { 
+         if (isCapture) {
           playSound("takes");
         } else {
           playSound('to');
@@ -493,8 +493,8 @@
         playSound(to[0]);
         playSound(to[1]);
       } else {
-        if (moveResult.captured) 
-        { 
+        if (moveResult.captured)
+        {
           playSound("takes");
         }
         else
@@ -549,10 +549,10 @@
           throw `Corner '${corner}' unknown.`;
       }
 
-      let moveResult = getCurrentGame().move({ 
-        from: promotionFromSquare, 
-        to: promotionTargetSquare, 
-        promotion: promotionPiece 
+      let moveResult = getCurrentGame().move({
+        from: promotionFromSquare,
+        to: promotionTargetSquare,
+        promotion: promotionPiece
       });
 
       promotionPending = false;
@@ -561,7 +561,7 @@
       renderPromotionChoices(false);
 
       displayLastMoveString();
-      
+
       playSound("promoted");
       playSound("to");
       playSound(promotionPieceFullName);
@@ -598,7 +598,7 @@
         UL: 'q',
         UR: 'r',
         DL: 'b',
-        DR: 'n' 
+        DR: 'n'
       };
 
       for (const cornerId in corners) {
@@ -627,7 +627,7 @@
         playerColor = document.getElementById('colorSelect').value;
       }
       const variant = document.getElementById('variantSelect').value;
-      stockfishDepth = parseInt(document.getElementById('levelSelect').value); 
+      stockfishDepth = parseInt(document.getElementById('levelSelect').value);
       document.getElementById('menu').classList.remove('active');
       document.getElementById('game').classList.add('active');
       moveSequence = [];
@@ -892,7 +892,20 @@
       gameMenu.style.display = gameMenu.style.display === "flex" ? "none" : "flex";
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {    
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+
       const variantSelect = document.getElementById("variantSelect");
       variantSelect.addEventListener("change", () => {
         variantSelect.dataset.fen = generateChess960Fen();
@@ -968,7 +981,7 @@
       document.getElementById("dl").addEventListener("click", () => handleTouch("DL"));
       document.getElementById("dr").addEventListener("click", () => handleTouch("DR"));
     });
-  
+
     // === Audio Queue System ===
     const fileNames = [
       "board", "white", "black", "king", "queen", "rook", "bishop", "knight", "pawn",
@@ -983,12 +996,13 @@
 
     async function preLoadAudio() {
       if (audioPreloaded) return;
-      
+
       const thinkingIndicator = document.getElementById("thinkingIndicator");
       thinkingIndicator.style.display = "block";
 
       const audioPromises = fileNames.map(fileName => {
         return new Promise(resolve => {
+          // Adjust path for service worker caching (relative to root)
           const audio = new Audio(`./audio/${language}/${fileName}.mp3`);
           audio.preload = "auto";
           audio.oncanplaythrough = () => {
