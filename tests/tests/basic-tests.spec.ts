@@ -9,10 +9,10 @@ const delay = (ms: number): Promise<void> => {
 };
 
 // Helper function to simulate a corner click
-async function clickCorner(page: Page, cornerId: 'ul' | 'ur' | 'bl' | 'br') {
+async function clickCorner(page: Page, cornerId: 'tl' | 'tr' | 'bl' | 'br') {
   await page.locator(`#${cornerId}`).click();
 }
-type CornerIdType = 'ul' | 'ur' | 'bl' | 'br';
+type CornerIdType = 'tl' | 'tr' | 'bl' | 'br';
 async function clickCorners(page: Page, ...cornerIds: CornerIdType[]) {
   for (let cornerId of cornerIds) {
     await clickCorner(page, cornerId);
@@ -55,24 +55,24 @@ test.describe('Blindfold Chess Application Tests', () => {
     // Initially, it should display "Board 1"
     await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === 'Board 1');
 
-    await clickCorners(page, 'br', 'bl', 'ul'); // White pawn from e2
+    await clickCorners(page, 'br', 'bl', 'tl'); // White pawn from e2
 
     // After selecting 'from' square, board number should still be "Board 1"
     await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === 'Board 1');
 
-    await clickCorners(page, 'br', 'ul', 'ul'); // to e4
+    await clickCorners(page, 'br', 'tl', 'tl'); // to e4
 
     // After completing the move, it should switch to Board 2
     await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === 'Board 2');
     
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/[♙♘].[12]-.+/));
 
-    await clickCorners(page, 'br', 'bl', 'ul'); // Black pawn from d7
+    await clickCorners(page, 'br', 'bl', 'tl'); // Black pawn from d7
 
     // After selecting 'from' square, board number should still be "Board 2"
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 2');
 
-    await clickCorners(page, 'br', 'ul', 'ul'); // to d5
+    await clickCorners(page, 'br', 'tl', 'tl'); // to d5
 
     // After completing the move, it should switch back to Board 1
     await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === 'Board 1');
@@ -85,13 +85,13 @@ test.describe('Blindfold Chess Application Tests', () => {
     let lastMoveString = await getTextContent(page, '#lastMoves');
     expect(lastMoveString).toBe('');
 
-    await clickCorners(page, 'br', 'bl', 'ul'); // White pawn from e2
+    await clickCorners(page, 'br', 'bl', 'tl'); // White pawn from e2
 
     lastMoveString = await getTextContent(page, '#lastMoves');
     // After selecting 'from' square, it should show the piece and origin
     expect(lastMoveString).toMatch(/♙e2-\?/); // Assuming pawn icon and e2-?
 
-    await clickCorners(page, 'br', 'ul', 'ul'); // to e4
+    await clickCorners(page, 'br', 'tl', 'tl'); // to e4
 
     // Even a few milliseconds after the move, it should show the move notation
     await delay(100)
@@ -105,8 +105,8 @@ test.describe('Blindfold Chess Application Tests', () => {
     await startGame(page);
 
     // Make a move
-    await clickCorners(page, 'br', 'bl', 'ul'); // from e2
-    await clickCorners(page, 'br', 'ul', 'ul'); // to e4
+    await clickCorners(page, 'br', 'bl', 'tl'); // from e2
+    await clickCorners(page, 'br', 'tl', 'tl'); // to e4
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙e2-e4/));
 
@@ -122,7 +122,7 @@ test.describe('Blindfold Chess Application Tests', () => {
     await startGame(page);
 
     // Select the from square
-    await clickCorners(page, 'br', 'bl', 'ul'); // from e2
+    await clickCorners(page, 'br', 'bl', 'tl'); // from e2
 
     expect(await getTextContent(page, '#lastMoves')).toBe('♙e2-?');
     expect(await page.locator('#selectionPreview div').count()).toBeGreaterThan(1);
@@ -141,7 +141,7 @@ test.describe('Blindfold Chess Application Tests', () => {
     const opponentLastMove = await getTextContent(page, '#lastMoves');
 
     // Select the from square
-    await clickCorners(page, 'br', 'bl', 'ul'); // from d7
+    await clickCorners(page, 'br', 'bl', 'tl'); // from d7
 
     expect(await getTextContent(page, '#lastMoves')).toBe('♟d7-?');
     expect(await page.locator('#selectionPreview div').count()).toBeGreaterThan(1);
@@ -163,13 +163,13 @@ test.describe('Blindfold Chess Application Tests', () => {
     });
 
     // Make the promotion move: g7-g8
-    await clickCorner(page, 'ur');
-    await clickCorner(page, 'ur');
+    await clickCorner(page, 'tr');
+    await clickCorner(page, 'tr');
     await clickCorner(page, 'bl'); // from g7
 
-    await clickCorner(page, 'ur');
-    await clickCorner(page, 'ur');
-    await clickCorner(page, 'ul'); // to g8 (This will trigger promotion to queen because 'alwaysQueen' is checked by default)
+    await clickCorner(page, 'tr');
+    await clickCorner(page, 'tr');
+    await clickCorner(page, 'tl'); // to g8 (This will trigger promotion to queen because 'alwaysQueen' is checked by default)
 
     const lastMoveString = await getTextContent(page, '#lastMoves');
     expect(lastMoveString).toMatch(/♙g7-g8=♕/);
@@ -191,16 +191,16 @@ test.describe('Blindfold Chess Application Tests', () => {
     });
 
     // Make the promotion move: g7-g8
-    await clickCorners(page, 'ur', 'ur', 'bl'); // from g7
-    await clickCorners(page, 'ur', 'ur', 'ul'); // to g8
+    await clickCorners(page, 'tr', 'tr', 'bl'); // from g7
+    await clickCorners(page, 'tr', 'tr', 'tl'); // to g8
 
     // Expect promotion choices to be visible
-    expect(await isVisible(page, '#ul.show-icon span')).toBe(true);
-    expect(await isVisible(page, '#ur.show-icon span')).toBe(true);
+    expect(await isVisible(page, '#tl.show-icon span')).toBe(true);
+    expect(await isVisible(page, '#tr.show-icon span')).toBe(true);
     expect(await isVisible(page, '#bl.show-icon span')).toBe(true);
     expect(await isVisible(page, '#br.show-icon span')).toBe(true);
-    expect(await getTextContent(page, '#ul.show-icon span')).toBe('♕');
-    expect(await getTextContent(page, '#ur.show-icon span')).toBe('♖');
+    expect(await getTextContent(page, '#tl.show-icon span')).toBe('♕');
+    expect(await getTextContent(page, '#tr.show-icon span')).toBe('♖');
     expect(await getTextContent(page, '#bl.show-icon span')).toBe('♗');
     expect(await getTextContent(page, '#br.show-icon span')).toBe('♘');
 
@@ -211,7 +211,7 @@ test.describe('Blindfold Chess Application Tests', () => {
     const divCount = await selectionPreviewContainer.locator('div').count();
     expect(divCount).toBe(0);
 
-    await clickCorner(page, 'ur'); // Rook chosen
+    await clickCorner(page, 'tr'); // Rook chosen
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙g7-g8=♖/));
     await delay(200);
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent?.match(/♙g7-g8=♖/));
@@ -237,9 +237,9 @@ test.describe('Blindfold Chess Application Tests', () => {
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
 
     // Make a move on Board 1 (White's Rook from e2 takes e8 - assuming default orientation for white)
-    await clickCorners(page, 'br', 'bl', 'ul'); // From e2 (assuming white's perspective)
+    await clickCorners(page, 'br', 'bl', 'tl'); // From e2 (assuming white's perspective)
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♖e2-?');
-    await clickCorners(page, 'ur', 'ul', 'ul'); // takes e8
+    await clickCorners(page, 'tr', 'tl', 'tl'); // takes e8
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♖e2xe8');
 
     expect(await getTextContent(page, '#boardNumber')).toBe('Board 1');
@@ -266,13 +266,13 @@ test.describe('Blindfold Chess Application Tests', () => {
     await page.evaluate(() => {
         window.blindfoldchess_games[0].load('k7/7Q/2K5/8/8/8/8/8 w - - 0 1');
     });
-    await clickCorners(page, 'ur', 'ur', 'br'); // White queen from h7
-    await clickCorners(page, 'ur', 'ur', 'bl'); // to g7
+    await clickCorners(page, 'tr', 'tr', 'br'); // White queen from h7
+    await clickCorners(page, 'tr', 'tr', 'bl'); // to g7
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
 
-    await clickCorners(page, 'ur', 'ur', 'bl'); // White queen from g7
-    await clickCorners(page, 'ul', 'ul', 'br'); // to b7, checkmate.
+    await clickCorners(page, 'tr', 'tr', 'bl'); // White queen from g7
+    await clickCorners(page, 'tl', 'tl', 'br'); // to b7, checkmate.
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♕g7-b7#');
 
@@ -288,13 +288,13 @@ test.describe('Blindfold Chess Application Tests', () => {
     await page.evaluate(() => {
         window.blindfoldchess_games[0].load('k7/7Q/2K5/8/8/8/8/8 w - - 0 1');
     });
-    await clickCorners(page, 'ur', 'ur', 'br'); // White queen from h7
-    await clickCorners(page, 'ur', 'ur', 'bl'); // to g7
+    await clickCorners(page, 'tr', 'tr', 'br'); // White queen from h7
+    await clickCorners(page, 'tr', 'tr', 'bl'); // to g7
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚a8-b8');
 
-    await clickCorners(page, 'ur', 'ur', 'bl'); // White queen from g7
-    await clickCorners(page, 'ul', 'ur', 'bl'); // to c7, check.
+    await clickCorners(page, 'tr', 'tr', 'bl'); // White queen from g7
+    await clickCorners(page, 'tl', 'tr', 'bl'); // to c7, check.
 
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♕g7-c7+');
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♚b8-a8');
@@ -340,8 +340,8 @@ test.describe('Blindfold Chess Application Tests', () => {
         window.blindfoldchess_games[0].load('k7/3Q4/8/8/8/8/8/K7 w - - 0 1');
     });
 
-    await clickCorners(page, 'ul', 'ur', 'br'); // White queen from d7
-    await clickCorners(page, 'ul', 'ur', 'bl'); // to c7
+    await clickCorners(page, 'tl', 'tr', 'br'); // White queen from d7
+    await clickCorners(page, 'tl', 'tr', 'bl'); // to c7
     await page.waitForFunction(() => document.getElementById('lastMoves')?.textContent == '♕d7-c7 ½-½');
   });
 });

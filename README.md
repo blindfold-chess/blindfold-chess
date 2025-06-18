@@ -74,9 +74,9 @@ During a game, tapping the white square in the center will open a menu with the 
 
 The game screen consists of four large, touchable quadrants:
 
-* **UL** (Upper Left)
+* **TL** (Top Left)
 
-* **UR** (Upper Right)
+* **TR** (Top Right)
 
 * **BL** (Bottom Left)
 
@@ -84,20 +84,20 @@ The game screen consists of four large, touchable quadrants:
 
 When you use the app in full-screen mode, you can use your thumbs to tap these quadrants. To select any square of the 8x8 chessboard, you will make **three consecutive taps** on these quadrants. Each tap narrows down the selection to a smaller quadrant, eventually pinpointing a single square. Visual help is provided during play to get acquainted with this system.
 
-**Example 1: tapping BR BL UL selects E2 (for White)**
+**Example 1: tapping BR BL TL selects E2 (for White)**
 
 * **Tap 1 (BR):** Selects the lower-right 4x4 quadrant (**e1-h4**).
 
 * **Tap 2 (BL):** Selects the lower-left 2x2 quadrant (**e1-f2**) within the previous 4x4 (e1-h4).
 
-* **Tap 3 (UL):** Selects the upper-left 1x1 square (**e2**) within the previous 2x2 (e1-f2).
+* **Tap 3 (TL):** Selects the upper-left 1x1 square (**e2**) within the previous 2x2 (e1-f2).
 
 *(Note: The actual quadrant sequence for a specific square depends on your chosen color (White or Black) as the board is oriented from your perspective.)*
 
 **Other examples:**
 
-* UR UR UR selects h8 (or a1 if you have the black pieces).
-* UL BR BR selects d5 (or e4 if you have the black pieces).
+* TR TR TR selects h8 (or a1 if you have the black pieces).
+* TL BR BR selects d5 (or e4 if you have the black pieces).
 
 **Steps to Make a Move:**
 
@@ -119,9 +119,9 @@ If your pawn reaches the last rank and you have **unchecked** the "Always promot
 
 2.  The four touchable quadrants will now visually display the chess piece icons in your color, representing the promotion options:
 
-    * **Upper Left: Queen**
+    * **Top Left: Queen**
 
-    * **Upper Right: Rook**
+    * **Top Right: Rook**
 
     * **Bottom Left: Bishop**
 

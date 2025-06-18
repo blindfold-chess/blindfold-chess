@@ -83,7 +83,7 @@
       padding: 3vmin;
       font-size: 10vmin;
     }
-    .spinner-ul, .spinner-ur, .spinner-bl, .spinner-br {
+    .spinner-tl, .spinner-tr, .spinner-bl, .spinner-br {
       border: 1vmin solid rgba(0, 0, 0, 0);
       border-top: 1vmin solid #007bff;
       border-radius: 50%;
@@ -91,12 +91,12 @@
       height: 10vmin;
       animation: spin 1s linear infinite;
     }
-    .spinner-ul {
+    .spinner-tl {
       position: absolute;
       top: 10vmin;
       left: 10vmin;
     }
-    .spinner-ur {
+    .spinner-tr {
       position: absolute;
       top: 10vmin;
       right: 20vmin;
@@ -237,8 +237,8 @@
 
   <div id="game">
     <div id="touchOverlay">
-      <div class="touch-corner" id="ul"></div>
-      <div class="touch-corner" id="ur"></div>
+      <div class="touch-corner" id="tl"></div>
+      <div class="touch-corner" id="tr"></div>
       <div class="touch-corner" id="bl"></div>
       <div class="touch-corner" id="br"></div>
     </div>
@@ -257,8 +257,8 @@
       <button id="gameMenuResumeBtn">Resume Game</button>
     </div>
     <div id="thinkingIndicator">
-      <div class="spinner-ul"></div>
-      <div class="spinner-ur"></div>
+      <div class="spinner-tl"></div>
+      <div class="spinner-tr"></div>
       <div class="spinner-bl"></div>
       <div class="spinner-br"></div>
     </div>
@@ -299,8 +299,12 @@
       return games[currentGameIndex];
     }
 
+    function isSimul() {
+      return simul > 1;
+    }
+
     function getPlayerColor() {
-      if (simul > 1) {
+      if (isSimul()) {
         return currentGameIndex % 2 == 0 ? 'white' : 'black';
       } else {
         return playerColor;
@@ -313,7 +317,7 @@
 
     function handleBoardNumberCommunication() {
       const boardNrEl = document.getElementById("boardNumber");
-      if (simul > 1) {
+      if (isSimul()) {
         let nr = currentGameIndex + 1;
         playSound("board");
         playSound(nr.toString());
@@ -322,10 +326,6 @@
       } else {
         boardNrEl.textContent = '';
       }
-    }
-
-    function isSimul() {
-      return simul > 1;
     }
 
     function goToNextBoard() {
@@ -529,11 +529,11 @@
       let promotionPieceFullName = '';
 
       switch (corner) {
-        case 'UL':
+        case 'TL':
           promotionPiece = 'q';
           promotionPieceFullName = 'queen';
           break;
-        case 'UR':
+        case 'TR':
           promotionPiece = 'r';
           promotionPieceFullName = 'rook';
           break;
@@ -589,14 +589,14 @@
 
     function renderPromotionChoices(show) {
       const corners = {
-        UL: document.getElementById('ul'),
-        UR: document.getElementById('ur'),
+        TL: document.getElementById('tl'),
+        TR: document.getElementById('tr'),
         BL: document.getElementById('bl'),
         BR: document.getElementById('br')
       };
       const pieceTypes = {
-        UL: 'q',
-        UR: 'r',
+        TL: 'q',
+        TR: 'r',
         BL: 'b',
         BR: 'n'
       };
@@ -623,7 +623,7 @@
       isPlaying = false;
       simul = parseInt(boardsSelect.value);
       currentGameIndex = 0;
-      if (!(simul > 1)) {
+      if (!isSimul()) {
         playerColor = document.getElementById('colorSelect').value;
       }
       const variant = document.getElementById('variantSelect').value;
@@ -792,7 +792,7 @@
     }
 
     function getSquare(sequence) {
-      const quadrantMap = { UL: 0, UR: 1, BL: 2, BR: 3 };
+      const quadrantMap = { TL: 0, TR: 1, BL: 2, BR: 3 };
       let row = 0, col = 0;
       for (let i = 0; i < 3; i++) {
         const q = quadrantMap[sequence[i]];
@@ -820,8 +820,8 @@
         let y = 0;
 
         const directionMap = {
-          UL: [0, 0],
-          UR: [1, 0],
+          TL: [0, 0],
+          TR: [1, 0],
           BL: [0, 1],
           BR: [1, 1],
         };
@@ -976,8 +976,8 @@
       });
       document.getElementById("selectionPreview").addEventListener("click", () => toggleVisibilityOfGameMenu());
       document.getElementById("gameMenuResumeBtn").addEventListener("click", () => toggleVisibilityOfGameMenu());
-      document.getElementById("ul").addEventListener("click", () => handleTouch("UL"));
-      document.getElementById("ur").addEventListener("click", () => handleTouch("UR"));
+      document.getElementById("tl").addEventListener("click", () => handleTouch("TL"));
+      document.getElementById("tr").addEventListener("click", () => handleTouch("TR"));
       document.getElementById("bl").addEventListener("click", () => handleTouch("BL"));
       document.getElementById("br").addEventListener("click", () => handleTouch("BR"));
     });
