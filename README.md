@@ -2,7 +2,7 @@
 
 Welcome to the Blindfold Chess app! This application is designed to help you practice and improve your blindfold chess skills by removing the visual board entirely and relying on a unique touch-based input system and audio feedback.
 
-[![Play the app live here!](https://img.shields.io/badge/Play%20Now-blue?style=for-the-badge)](https://blindfold-chess.github.io)
+[![Play the app live here!](https://img.shields.io/badge/Play%20Now-blue?style=for-the-badge)](https://blindfold-chess.app)
 
 ## 💡 Core Idea: Play Silently with Eyes Closed
 
@@ -129,8 +129,7 @@ If your pawn reaches the last rank and you have **unchecked** the "Always promot
 
 3.  Tap the quadrant corresponding to the piece you wish to promote to.
 
-    * The app will confirm your choice by finishing the move sentence with - for example - "promoted to Queen". The full sentence that you've heard, might then be: "White pawn from f7 takes g8 - choose a promotion piece - promoted to Queen".
-
+    * The app will confirm your choice by finishing the move sentence with – for example – "promoted to Queen". The full sentence that you've heard, might then be: "White pawn from f7 takes g8 – choose a promotion piece – promoted to Queen".
 
 ## 🧠 Tips for Blindfold Play
 
@@ -148,14 +147,34 @@ If your pawn reaches the last rank and you have **unchecked** the "Always promot
 
 Enjoy your blindfold chess journey!
 
-[![Play the app live here!](https://img.shields.io/badge/Play%20Now-blue?style=for-the-badge)](https://blindfold-chess.github.io)
+[![Play the app live here!](https://img.shields.io/badge/Play%20Now-blue?style=for-the-badge)](https://blindfold-chess.app)
+
+## 📚 Frequently asked questions
+
+## Is this app free?
+
+Yes, [blindfold-chess.app](https://blindfold-chess.app) is free for individual, private, non-commercial use. If you are a chess teacher, you can use [blindfold-chess.app](https://blindfold-chess.app) for teaching purposes without license. For using this app or parts of this app outside of the domain "blindfold-chess.app" you need a license. For more information, see the Licenses section below.
+
+### Can I download the app?
+
+Yes. This app is a [Progressive Web App (PWA)](https://en.wikipedia.org/wiki/Progressive_web_app) and can be installed on your device. Depending on your browser (e.g. Chrome, Edge, etc.) you might see, near the URL bar, an icon for installing this app. It will appear as an icon on your home screen, and you can launch it from there.
+
+### Can I use this app offline?
+
+Yes. There are two options:
+1.  Install the app (see above). This will allow you to use the full app offline.
+2.  Use the app without installing it. After starting a game via the "Start Game" button, the app won't access the internet anymore.
+
+### Can I play against a human opponent?
+
+No, not yet. This might be possible in the future, depending on the interest of the community. You can ask your favorite chess website to buy a license to use this app on their website for games between humans. Then you might play blindfolded against a human who doesn't play blindfolded, or create a game that requires the other player to also play blindfolded.
 
 # Blindfold Chess App: Creator Guide
 This section is for people interested in **creating chess tools**.
 
 ## 📜 Licenses
 
-- The idea of the touch-based input system, with 3 taps to select a square, is unique to this app and owned by Symbolinker. If you're interested in using this idea in your own application/website/etc., please contact me at symbolinker@gmail.com.
+- The idea of the touch-based input system, with 3 taps to select a square, is unique – a proprietary feature found exclusively on [blindfold-chess.app](https://blindfold-chess.app) and owned by Symbolinker (mail: symbolinker@gmail.com). Licenses are available if you're interested in using this idea, or parts of this app, in your own application/website/etc.
 - The file stockfish.js that is used, was downloaded from https://github.com/lichess-org/stockfish.js (the latest release of 2018). For its license, see the official [Stockfish repository](https://github.com/official-stockfish/Stockfish).
 - The file chess.js that is used, was downloaded (as a chess.ts file) from https://github.com/jhlywa/chess.js/pull/493 (at 28-05-2025). For its license, see the [chess.js repository](https://github.com/jhlywa/chess.js).
 
