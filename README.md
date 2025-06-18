@@ -82,7 +82,7 @@ The game screen consists of four large, touchable quadrants:
 
 * **DR** (Lower Right)
 
-To select any square on the 8x8 chessboard, you will make **three consecutive taps** on these quadrants. Each tap narrows down the selection to a smaller quadrant, eventually pinpointing a single square. Visual help is provided during play to get acquainted with this system.
+When you use the app in full-screen mode, you can use your thumbs to tap these quadrants. To select any square of the 8x8 chessboard, you will make **three consecutive taps** on these quadrants. Each tap narrows down the selection to a smaller quadrant, eventually pinpointing a single square. Visual help is provided during play to get acquainted with this system.
 
 **Example 1: tapping DR DL UL selects E2 (for White)**
 
