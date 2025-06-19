@@ -157,12 +157,12 @@ Yes, [blindfold-chess.app](https://blindfold-chess.app) is free for individual, 
 
 ### Can I download the app?
 
-Yes. This app is a [Progressive Web App (PWA)](https://en.wikipedia.org/wiki/Progressive_web_app) and can be installed on your device. Depending on your browser (e.g. Chrome, Edge, etc.) you might see, near the URL bar, an icon for installing this app. It will appear as an icon on your home screen, and you can launch it from there.
+Yes. This app is a [Progressive Web App (PWA)](https://en.wikipedia.org/wiki/Progressive_web_app) and can be installed on your device. When you open the app in a browser and see "blindfold-chess.app" in the URL bar, then, depending on your browser (e.g. Chrome, Edge, etc.), you might see, near the URL bar, an icon for installing this app on your device. It will appear as an icon on your home screen, and you can launch it from there.
 
 ### Can I use this app offline?
 
 Yes. There are two options:
-1.  Install the app (see above). This will allow you to use the full app offline.
+1.  Install the app (see above). This will allow you to use the full app without internet connection.
 2.  Use the app without installing it. After starting a game via the "Start Game" button, the app won't access the internet anymore.
 
 ### Can I play against a human opponent?
