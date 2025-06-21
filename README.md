@@ -180,4 +180,4 @@ This section is for people interested in **creating chess tools**.
 
 ## 🤝 Contributing
 
-Requests for improvements, bug fixes and new features are welcome. Programmers might start a [discussion](https://github.com/blindfold-chess/blindfold-chess.github.io/discussions), report an [issue](https://github.com/blindfold-chess/blindfold-chess.github.io/issues) or open a [pull request](https://github.com/blindfold-chess/blindfold-chess.github.io/pulls). If you're not a programmer, you can e-mail me at symbolinker@gmail.com and I'll do my best to implement your suggestions.
+Requests for improvements, bug fixes and new features are welcome. Programmers might start a [discussion](https://github.com/blindfold-chess/blindfold-chess/discussions), report an [issue](https://github.com/blindfold-chess/blindfold-chess/issues) or open a [pull request](https://github.com/blindfold-chess/blindfold-chess/pulls). If you're not a programmer, you can e-mail me at symbolinker@gmail.com and I'll do my best to implement your suggestions.
