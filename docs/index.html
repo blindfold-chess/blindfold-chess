@@ -652,7 +652,7 @@
         }
       }
       window.blindfoldchess_games = games;
-      displayLastMoveString('');
+      displayLastMoveString(isSimul() ? '' : 'menu');
       handleBoardNumberCommunication();
       if (getPlayerColor() === 'black') {
         requestEngineMove();
@@ -1002,7 +1002,6 @@
 
       const audioPromises = fileNames.map(fileName => {
         return new Promise(resolve => {
-          // Adjust path for service worker caching (relative to root)
           const audio = new Audio(`./audio/${language}/${fileName}.mp3`);
           audio.preload = "auto";
           audio.oncanplaythrough = () => {
