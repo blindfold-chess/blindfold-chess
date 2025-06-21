@@ -34,7 +34,7 @@ A key feature of this app is its design for silent play. Since there is no voice
 
 * **Dynamic AI Opponent (Stockfish):** Play against a strong chess engine with precise control over its difficulty, allowing you to set the AI's "thinking depth" from 1 (Easy) to 15 (Hard).
 
-* **Easy Promotion Choice:** When a pawn promotes, the four touch quadrants display the actual chess piece icons (Queen, Rook, Bishop, Knight). Because the piece icons are always displayed in the same quadrants (for example, the Queen is always displayed in the upper-left quadrant), you could even keep your eyes closed.
+* **Easy Promotion Choice:** When a pawn promotes, the four touch quadrants display the actual chess piece icons (Queen, Rook, Bishop, Knight). Because the piece icons are always displayed in the same quadrants (for example, the Queen is always displayed in the top-left quadrant), you could even keep your eyes closed.
 
 * **Enhanced Undo Last Move:** Correct mistakes by undoing the last full move (your move and the AI's response). In multi-board mode, it undoes the AI's move on the current board and then your move on the previous board.
 
@@ -86,11 +86,11 @@ When you use the app in full-screen mode, you can use your thumbs to tap these q
 
 **Example 1: tapping BR BL TL selects E2 (for White)**
 
-* **Tap 1 (BR):** Selects the lower-right 4x4 quadrant (**e1-h4**).
+* **Tap 1 (BR):** Selects the bottom-right 4x4 quadrant (**e1-h4**).
 
-* **Tap 2 (BL):** Selects the lower-left 2x2 quadrant (**e1-f2**) within the previous 4x4 (e1-h4).
+* **Tap 2 (BL):** Selects the bottom-left 2x2 quadrant (**e1-f2**) within the previous 4x4 (e1-h4).
 
-* **Tap 3 (TL):** Selects the upper-left 1x1 square (**e2**) within the previous 2x2 (e1-f2).
+* **Tap 3 (TL):** Selects the top-left 1x1 square (**e2**) within the previous 2x2 (e1-f2).
 
 *(Note: The actual quadrant sequence for a specific square depends on your chosen color (White or Black) as the board is oriented from your perspective.)*
 
@@ -153,11 +153,11 @@ Enjoy your blindfold chess journey!
 
 ## Is this app free?
 
-Yes, [blindfold-chess.app](https://blindfold-chess.app) is free for individual, private, non-commercial use. If you are a chess teacher, you can use [blindfold-chess.app](https://blindfold-chess.app) for teaching purposes without license. For using this app or parts of this app outside of the domain "blindfold-chess.app" you need a license. For more information, see the Licenses section below.
+Yes, [blindfold-chess.app](https://blindfold-chess.app) is free for individual, private, non-commercial use. Also, if you are a chess teacher or online content creator, you can show how [blindfold-chess.app](https://blindfold-chess.app) works and even play full games. Make sure the URL "blindfold-chess.app" is visible at least a few seconds. For using this app or parts of this app outside of the domain "blindfold-chess.app" you need a license. For more information, see the Licenses section below.
 
 ### Can I download the app?
 
-Yes. This app is a [Progressive Web App (PWA)](https://en.wikipedia.org/wiki/Progressive_web_app) and can be installed on your device. When you open the app in a browser and see "blindfold-chess.app" in the URL bar, then, depending on your browser (e.g. Chrome, Edge, etc.), you might see, near the URL bar, an icon for installing this app on your device. It will appear as an icon on your home screen, and you can launch it from there.
+Yes. This app is a [Progressive Web App (PWA)](https://en.wikipedia.org/wiki/Progressive_web_app) and can be installed on your device. When you open the app in a browser and see "blindfold-chess.app" in the URL bar, then, depending on your browser (e.g. Chrome, Edge, etc.), you might see, near the URL bar, an icon for installing this app on your device. After installing, the app will appear on your home screen, and you can launch it from there. If clicking on the app icon opens a regular browser tab, then only a shortcut has been placed on your home screen. Try installing the app via a different browser.
 
 ### Can I use this app offline?
 
