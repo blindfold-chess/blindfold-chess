@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blindfold Chess App: About - User Guide and Creator Guide</title>
+    <meta name="description" content="Master blindfold chess with simple but unique touch input system. Practice eyes-closed with audio feedback, single-board or multi-board play, and Stockfish AI at thinking depth of your choice. Online and offline play available.">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16x16.png">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3 {
+            color: white;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #333;
+        }
+
+        h1 {
+            font-size: 2.2em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+        }
+
+        h3 {
+            font-size: 1.4em;
+        }
+
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+
+        ul li, ol li {
+            margin-bottom: 0.5em;
+        }
+
+        .play-button {
+            margin: 5px;
+            background-color: #007bff;
+            border-radius: 5px;
+            padding: 10px;
+            color: white;
+            border: none;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+        }
+
+        .play-button:hover {
+            text-decoration: none;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            h3 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Blindfold Chess App: User Guide</h1>
+        <p>Welcome to the Blindfold Chess app! This application is designed to help you practice and improve your blindfold chess skills by removing the visual board entirely and relying on a unique touch-based input system and audio feedback.</p>
+        <a href="https://blindfold-chess.app" target="_blank" class="play-button">
+            PLAY NOW
+        </a>
+    </header>
+
+    <main>
+        <h2>💡 Core Idea: Play Silently with Eyes Closed</h2>
+        <p>The core idea of this app is that you play with your eyes closed and without using your voice. Simply put on earplugs, close your eyes, control the pieces by just touching the screen-quadrants with your thumbs. You can enjoy a completely immersive, audio-guided chess experience, without disturbing others.</p>
+
+        <h2>✨ Key Features</h2>
+        <ul>
+            <li><strong>True Blindfold Experience:</strong> No visual chess board is displayed during gameplay. All interaction is through touch input and audio feedback.</li>
+            <li><strong>Multi-Board (Simultaneous) Play:</strong> Challenge yourself by playing on up to 8 different chess boards simultaneously. The app seamlessly guides you from one board to the next.</li>
+            <li><strong>Intuitive Touch Input:</strong> Select squares and promotion pieces using a simple, repeatable quadrant-based tapping system.</li>
+            <li><strong>Comprehensive Audio Feedback:</strong>
+                <ul>
+                    <li>Announces the current board number when playing multiple boards.</li>
+                    <li>Announces moves (e.g., "White pawn from e2 to e4").</li>
+                    <li>Confirms special moves like captures and castling.</li>
+                    <li>Notifies you of game states (Check, Checkmate, Stalemate, Draw).</li>
+                    <li>Alerts you to illegal moves.</li>
+                    <li>Guides you through promotion choices.</li>
+                </ul>
+            </li>
+            <li><strong>Chess 960 (Fischer Random) Support:</strong> Practice blindfold chess with random starting positions.</li>
+            <li><strong>Dynamic AI Opponent (Stockfish):</strong> Play against a strong chess engine with precise control over its difficulty, allowing you to set the AI's "thinking depth" from 1 (Easy) to 15 (Hard).</li>
+            <li><strong>Easy Promotion Choice:</strong> When a pawn promotes, the four touch quadrants display the actual chess piece icons (Queen, Rook, Bishop, Knight). Because the piece icons are always displayed in the same quadrants (for example, the Queen is always displayed in the top-left quadrant), you could even keep your eyes closed.</li>
+            <li><strong>Enhanced Undo Last Move:</strong> Correct mistakes by undoing the last full move (your move and the AI's response). In multi-board mode, it undoes the AI's move on the current board and then your move on the previous board.</li>
+            <li><strong>Cancel Selection:</strong> Easily reset your current square selection if you make a mistake.</li>
+        </ul>
+
+        <h2>🎮 How to Play</h2>
+
+        <h3>Starting a New Game</h3>
+        <ol>
+            <li><strong>Open the App:</strong> The app starts on the <strong>Menu</strong> screen.</li>
+            <li><strong>Select Boards:</strong> Choose the number of simultaneous games you wish to play (from 1 to 8).</li>
+            <li><strong>Choose Your Color:</strong> In case of playing one board: select "White" or "Black" from the "Choose color" dropdown. <strong>Note:</strong> If you choose to play multiple boards, this setting is not available, and your color will alternate (White/Black) for each successive board.</li>
+            <li><strong>Select AI Level (Depth):</strong> Choose a numerical value (1-15) from the "Level" dropdown. This directly sets how many moves deep the Stockfish AI will calculate, with higher numbers indicating a stronger opponent.</li>
+            <li><strong>Select Variant:</strong> Choose "Standard" for regular chess or "Chess 960" for a random starting position. The starting position will be displayed visually on the menu screen.</li>
+            <li><strong>Always Promote to Queen:</strong> By default, this option is checked, meaning your pawns will automatically promote to a Queen. <strong>Uncheck this option</strong> if you want to manually choose your promotion piece (Rook, Bishop, or Knight) during the game.</li>
+            <li><strong>Start Game:</strong> Tap the "Start Game" button.</li>
+        </ol>
+
+        <h3>Using the Game Menu</h3>
+        <p>During a game, tapping the white square in the center will open a menu with the following options:</p>
+        <ul>
+            <li><strong>"Cancel Selection":</strong> If you've started selecting a square but want to reset, tap this button. It will clear your current partial selection.</li>
+            <li><strong>"Undo Last Move":</strong> Tap this to undo the last full move (your move and the AI's response). In multi-board mode, it will undo the current board's last (AI) move and then switch to the previous board to undo your last move.</li>
+            <li><strong>"Main Menu":</strong> Returns you to the main menu. Here you can review the 960 starting position and then click "Resume Game".</li>
+            <li><strong>"Resume Game":</strong> Returns you to your current game.</li>
+        </ul>
+
+        <h3>Making a Move (Square Selection)</h3>
+        <p>The game screen consists of four large, touchable quadrants:</p>
+        <ul>
+            <li><strong>TL</strong> (Top Left)</li>
+            <li><strong>TR</strong> (Top Right)</li>
+            <li><strong>BL</strong> (Bottom Left)</li>
+            <li><strong>BR</strong> (Bottom Right)</li>
+        </ul>
+        <p>When you use the app in full-screen mode, you can use your thumbs to tap these quadrants. To select any square of the 8x8 chessboard, you will make <strong>three consecutive taps</strong> on these quadrants. Each tap narrows down the selection to a smaller quadrant, eventually pinpointing a single square. Visual help is provided during play to get acquainted with this system.</p>
+
+        <p><strong>Example 1: tapping BR BL TL selects E2 (for White)</strong></p>
+        <ul>
+            <li><strong>Tap 1 (BR):</strong> Selects the bottom-right 4x4 quadrant (<strong>e1-h4</strong>).</li>
+            <li><strong>Tap 2 (BL):</strong> Selects the bottom-left 2x2 quadrant (<strong>e1-f2</strong>) within the previous 4x4 (e1-h4).</li>
+            <li><strong>Tap 3 (TL):</strong> Selects the top-left 1x1 square (<strong>e2</strong>) within the previous 2x2 (e1-f2).</li>
+        </ul>
+        <p><em>(Note: The actual quadrant sequence for a specific square depends on your chosen color (White or Black) as the board is oriented from your perspective.)</em></p>
+
+        <p><strong>Other examples:</strong></p>
+        <ul>
+            <li>TR TR TR selects h8 (or a1 if you have the black pieces).</li>
+            <li>TL BR BR selects d5 (or e4 if you have the black pieces).</li>
+        </ul>
+
+        <p><strong>Steps to Make a Move:</strong></p>
+        <ol>
+            <li><strong>Select the "From" Square:</strong> Perform <strong>three taps</strong> to select the square of the piece you want to move.
+                <ul>
+                    <li>The app will announce your chosen square (e.g., "White pawn from e2").</li>
+                </ul>
+            </li>
+            <li><strong>Select the "To" Square:</strong> Perform <strong>another three taps</strong> to select the destination square for your piece.
+                <ul>
+                    <li>The app will announce the destination square (e.g., "to e4").</li>
+                    <li>If the move is illegal, you will hear "That's an illegal move". The square selection is undone so that you can try again.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>Promotion</h3>
+        <p>If your pawn reaches the last rank and you have <strong>unchecked</strong> the "Always promote to queen" option in the menu:</p>
+        <ol>
+            <li>After selecting the "to" square for your pawn's promotion, the app will announce: "Choose a promotion piece."</li>
+            <li>The four touchable quadrants will now visually display the chess piece icons in your color, representing the promotion options:
+                <ul>
+                    <li><strong>Top Left: Queen</strong></li>
+                    <li><strong>Top Right: Rook</strong></li>
+                    <li><strong>Bottom Left: Bishop</strong></li>
+                    <li><strong>Bottom Right: Knight</strong></li>
+                </ul>
+            </li>
+            <li>Tap the quadrant corresponding to the piece you wish to promote to.
+                <ul>
+                    <li>The app will confirm your choice by finishing the move sentence with – for example – "promoted to Queen". The full sentence that you've heard, might then be: "White pawn from f7 takes g8 – choose a promotion piece – promoted to Queen".</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>🧠 Tips for Blindfold Play</h2>
+        <ul>
+            <li><strong>Visualize the Board:</strong> Mentally keep track of piece positions and board coordinates for each active game.</li>
+            <li><strong>Listen Carefully:</strong> Pay close attention to all audio cues for moves, game states, and board changes.</li>
+            <li><strong>Practice Coordinates:</strong> Familiarize yourself with algebraic notation (e.g., a1, h8) thoroughly.</li>
+            <li><strong>Start Simple:</strong> Begin with standard chess, 1 board, and easier AI levels (lower depth), then gradually increase complexity.</li>
+            <li><strong>Don't Be afraid to Undo:</strong> Use the "Undo Last Move" button to review and correct mistakes, especially when learning.</li>
+            <li><strong>Take care of your health:</strong> Some professional players advice against playing too many boards blindfolded. Take care of your brain ❤️</li>
+        </ul>
+
+        <p>Enjoy your blindfold chess journey!</p>
+
+        <a href="https://blindfold-chess.app" target="_blank" class="play-button">
+            PLAY NOW
+        </a>
+
+        <h2>📚 Frequently asked questions</h2>
+
+        <h3>Is this app free?</h3>
+        <p>Yes, <a href="https://blindfold-chess.app" target="_blank">blindfold-chess.app</a> is free for individual, private, non-commercial use. Also, if you are a chess teacher or online content creator, you can show how <a href="https://blindfold-chess.app" target="_blank">blindfold-chess.app</a> works and even play full games. Make sure the URL "blindfold-chess.app" is visible at least a few seconds. For using this app or parts of this app outside of the domain "blindfold-chess.app" you need a license. For more information, see the Licenses section below.</p>
+
+        <h3>Can I download the app?</h3>
+        <p>Yes. This app is a <a href="https://en.wikipedia.org/wiki/Progressive_web_app" target="_blank">Progressive Web App (PWA)</a> and can be installed on your device. When you open the app in a browser and see "blindfold-chess.app" in the URL bar, then, depending on your browser (e.g. Chrome, Edge, etc.), you might see, near the URL bar, an icon for installing this app on your device. After installing, the app will appear on your home screen, and you can launch it from there. If clicking on the app icon opens a regular browser tab, then only a shortcut has been placed on your home screen. Try installing the app via a different browser.</p>
+
+        <h3>Can I use this app offline?</h3>
+        <p>Yes. There are two options:</p>
+        <ol>
+            <li>Install the app (see above). This will allow you to use the full app without internet connection.</li>
+            <li>Use the app without installing it. After starting a game via the "Start Game" button, the app won't access the internet anymore.</li>
+        </ol>
+
+        <h3>Can I play against a human opponent?</h3>
+        <p>No, not yet. This might be possible in the future, depending on the interest of the community. You can ask your favorite chess website to buy a license to use this app on their website for games between humans. Then you might play blindfolded against a human who doesn't play blindfolded, or create a game that requires the other player to also play blindfolded.</p>
+
+        <h1>Blindfold Chess App: Creator Guide</h1>
+        <p>This section is for people interested in <strong>creating chess tools</strong>.</p>
+
+        <h2>📜 Licenses</h2>
+        <ul>
+            <li>The idea of the touch-based input system, with 3 taps to select a square, is unique – a proprietary feature found exclusively on <a href="https://blindfold-chess.app" target="_blank">blindfold-chess.app</a> and owned by Symbolinker (mail: symbolinker@gmail.com). Licenses are available if you're interested in using this idea, or parts of this app, in your own application/website/etc.</li>
+            <li>The file stockfish.js that is used, was downloaded from <a href="https://github.com/lichess-org/stockfish.js" target="_blank">https://github.com/lichess-org/stockfish.js</a> (the latest release of 2018). For its license, see the official <a href="https://github.com/official-stockfish/Stockfish" target="_blank">Stockfish repository</a>.</li>
+            <li>The file chess.js that is used, was downloaded (as a chess.ts file) from <a href="https://github.com/jhlywa/chess.js/pull/493" target="_blank">https://github.com/jhlywa/chess.js/pull/493</a> (at 28-05-2025). For its license, see the <a href="https://github.com/jhlywa/chess.js" target="_blank">chess.js repository</a>.</li>
+        </ul>
+
+        <h2>🤝 Contributing</h2>
+        <p>Requests for improvements, bug fixes and new features are welcome. Programmers might start a <a href="https://github.com/blindfold-chess/blindfold-chess/discussions" target="_blank">discussion</a>, report an <a href="https://github.com/blindfold-chess/blindfold-chess/issues" target="_blank">issue</a> or open a <a href="https://github.com/blindfold-chess/blindfold-chess/pulls" target="_blank">pull request</a>. If you're not a programmer, you can e-mail me at symbolinker@gmail.com and I'll do my best to implement your suggestions.</p>
+    </main>
+</body>
+</html>

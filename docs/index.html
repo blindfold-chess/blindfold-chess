@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blindfold Chess App</title>
+  <meta name="description" content="Master blindfold chess with simple but unique touch input system. Practice eyes-closed with audio feedback, single-board or multi-board play, and Stockfish AI at thinking depth of your choice. Online and offline play available.">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
@@ -45,6 +46,9 @@
       width: 250px;
       color: white;
       border: none;
+    }
+    button:hover {
+      cursor: pointer;
     }
     #touchOverlay {
       display: grid;
@@ -232,7 +236,7 @@
     </label>
     <button id="startBtn">Start Game</button>
     <button id="resumeBtn" class="hidden">Resume Game</button>
-    <a href="https://github.com/blindfold-chess/blindfold-chess#readme" target="_blank" style="margin-top: 1em; font-size: 1.2em; text-decoration: none; color: #007bff;">About this app</a>
+    <a href="./about" target="_blank" style="margin-top: 1em; font-size: 1.2em; text-decoration: none; color: #007bff;">About this app</a>
   </div>
 
   <div id="game">
