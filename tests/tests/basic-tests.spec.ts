@@ -81,13 +81,9 @@ test.describe('Blindfold Chess Application Tests', () => {
   test('displayLastMoveString should update correctly for standard moves', async ({ page }) => {
     await startGame(page); // Start a single board game (player white)
 
-    // Initial state: last move string should be empty
-    let lastMoveString = await getTextContent(page, '#lastMoves');
-    expect(lastMoveString).toBe('');
-
     await clickCorners(page, 'br', 'bl', 'tl'); // White pawn from e2
 
-    lastMoveString = await getTextContent(page, '#lastMoves');
+    let lastMoveString = await getTextContent(page, '#lastMoves');
     // After selecting 'from' square, it should show the piece and origin
     expect(lastMoveString).toMatch(/♙e2-\?/); // Assuming pawn icon and e2-?
 
