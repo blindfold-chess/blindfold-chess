@@ -1,0 +1,43 @@
+Blindfold Chess App: License Agreement
+
+This License Agreement (the "Agreement") governs your use of the Blindfold Chess App (the "App"), located at https://blindfold-chess.app, and its associated features, including but not limited to its unique touch-based input system, audio feedback, overall design, and its associated source code and development materials hosted at https://github.com/blindfold-chess/blindfold-chess/. By accessing or using the App, you agree to be bound by the terms of this Agreement.
+
+1. Ownership and Copyright
+
+The Blindfold Chess App, including its unique touch-based input system and overall design, is the proprietary intellectual property of Symbolinker (symbolinker@gmail.com) and is protected by copyright laws. All rights not expressly granted to you in this Agreement are reserved by Symbolinker.
+
+2. Permitted Uses
+
+2.1. Free Individual and Personal Use
+You are granted a free, non-exclusive, non-transferable license to use the App for your individual and personal purposes. This includes, but is not limited to, practicing, training, and improving your blindfold chess skills. This permission extends to individuals who may earn income from professional chess activities, such as tournament play, coaching, or content creation, provided their use of the App itself remains personal and does not involve the commercial reproduction, distribution, or integration of the App's unique features into other commercial products or services.
+
+2.2. Educational and Content Creation Use
+Chess teachers, online content creators, and similar educational entities are permitted to use and showcase the App for instructional or demonstration purposes, including playing full games. When doing so, the URL "blindfold-chess.app" must be visibly displayed for at least a few seconds in any content created (videos, streams, screenshots, etc.).
+
+3. Restricted Uses
+Unless explicitly granted through a separate commercial license agreement with Symbolinker, the following uses are strictly prohibited:
+- Commercial Use: Any use of the App or its unique features for direct or indirect commercial gain, including but not limited to selling access to the App, incorporating it into a paid product or service, or using it for advertising purposes.
+- Reproduction and Distribution: Copying, reproducing, distributing, modifying, creating derivative works of, publicly displaying, or publicly performing any part of the App, including its code, design, or unique features, outside of the blindfold-chess.app domain.
+- Sub-licensing: Granting sub-licenses to others to use the App or any of its components.
+- Use in Other Applications/Websites: Integrating the unique touch-based input system or any other proprietary elements of the App into other applications, websites, or platforms without a specific license.
+
+4. Commercial Licensing
+For any use beyond the "Permitted Uses" described in Section 2, particularly for commercial purposes or integration into other applications/websites, a separate commercial license is required. Please contact Symbolinker at symbolinker@gmail.com to inquire about licensing opportunities.
+
+5. Third-Party Licenses
+The App incorporates third-party software components, each governed by their respective licenses:
+- Stockfish.js: Used for the AI opponent. Its license can be found at the official Stockfish repository: https://github.com/official-stockfish/Stockfish
+- Chess.js: Used for chess logic. Its license can be found at the chess.js repository: https://github.com/jhlywa/chess.js
+
+Your use of the App acknowledges and abides by these third-party licenses where applicable.
+
+6. Disclaimer of Warranties
+The App is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall Symbolinker be liable for any claim, damages, or other liability arising from your use of the App.
+
+7. Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of The Netherlands, without regard to its conflict of law principles.
+
+8. Changes to This Agreement
+Symbolinker reserves the right to modify this Agreement at any time. Your continued use of the App after any such modifications constitutes your acceptance of the new terms.
+
+For any questions regarding this License Agreement, please contact Symbolinker at symbolinker@gmail.com.
