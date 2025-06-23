@@ -708,7 +708,7 @@
     }
 
     function showMenu() {
-      toggleVisibilityOfGameMenu();
+      toggleVisibilityOfGameMenu(false);
       document.getElementById('game').classList.remove('active');
       document.getElementById('menu').classList.add('active');
       const resumeBtn = document.getElementById('resumeBtn');
@@ -786,7 +786,7 @@
     }
 
     function onCancelSelectionClicked() {
-      toggleVisibilityOfGameMenu();
+      toggleVisibilityOfGameMenu(false);
       fromSquare = null;
       moveSequence = [];
       promotionPending = false;
@@ -795,6 +795,43 @@
       updateSelectionPreview();
       renderPromotionChoices(false);
       displayLastMoveString();
+    }
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    for (let touchCorner of document.getElementsByClassName("touch-corner")) {
+      touchCorner.addEventListener('touchstart', (e) => {
+        console.log('start');
+        if (e.touches.length === 1) { // Only consider single touch
+          touchStartX = e.touches[0].clientX;
+          touchEndX = 0;
+        }
+      }, { passive: true }); // Use passive listener for performance
+
+      touchCorner.addEventListener('touchmove', (e) => {
+        console.log('move');
+
+        if (e.touches.length === 1) {
+          touchEndX = e.touches[0].clientX;
+        }
+      }, { passive: true }); // Use passive listener for performance
+
+      touchCorner.addEventListener('touchend', () => {
+        console.log('end');
+
+        if (touchStartX && touchEndX) {
+          const swipeDistanceToLeft = touchStartX - touchEndX;
+          const screenWidth = window.innerWidth;
+          const threshold = screenWidth * 0.25;
+          console.log('threshold: ' + threshold);
+          console.log('swipeDistance: ' + swipeDistanceToLeft);
+          if (swipeDistanceToLeft > threshold) {
+            onCancelSelectionClicked();
+          }
+        }
+        touchStartX = 0;
+        touchEndX = 0;
+      });
     }
 
     function getSquare(sequence) {
@@ -886,20 +923,19 @@
 
     window.addEventListener('beforeunload', function (e) {
       if (document.getElementById('game').classList.contains('active')) {
-        toggleVisibilityOfGameMenu();
+        toggleVisibilityOfGameMenu(true);
         e.preventDefault();
         e.returnValue = 'Accidentally closing the app during the game was prevented. You can exit from the main menu.';
         return;
       }
     });
 
-    function toggleVisibilityOfGameMenu() {
-      const gameMenu = document.getElementById("gameMenu");
-      gameMenu.style.display = gameMenu.style.display === "flex" ? "none" : "flex";
+    function toggleVisibilityOfGameMenu(shouldBeVisible) {
+      document.getElementById("gameMenu").style.display = shouldBeVisible ? "flex" : "none";
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // Register Service Worker
+      // Register Service Worker for installing the app.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./service-worker.js')
@@ -958,7 +994,7 @@
       document.getElementById("menuBtn").addEventListener("click", showMenu);
       document.getElementById("cancelSelectionBtn").addEventListener("click", onCancelSelectionClicked);
       document.getElementById("undoMoveBtn").addEventListener("click", () => {
-        toggleVisibilityOfGameMenu();
+        toggleVisibilityOfGameMenu(false);
         if (isSimul()) {
           getCurrentGame().undo(); // undo engine move current board
           currentGameIndex = previousGameIndex;
@@ -980,8 +1016,8 @@
         renderPromotionChoices(false);
         handleBoardNumberCommunication();
       });
-      document.getElementById("selectionPreview").addEventListener("click", () => toggleVisibilityOfGameMenu());
-      document.getElementById("gameMenuResumeBtn").addEventListener("click", () => toggleVisibilityOfGameMenu());
+      document.getElementById("selectionPreview").addEventListener("click", () => toggleVisibilityOfGameMenu(true));
+      document.getElementById("gameMenuResumeBtn").addEventListener("click", () => toggleVisibilityOfGameMenu(false));
       document.getElementById("tl").addEventListener("click", () => handleTouch("TL"));
       document.getElementById("tr").addEventListener("click", () => handleTouch("TR"));
       document.getElementById("bl").addEventListener("click", () => handleTouch("BL"));
