@@ -187,6 +187,30 @@
     #resumeBtn {
       display: none;
     }
+    #pgnViewer {
+      display: none;
+      position: absolute;
+      width: 100vw;
+      height: 100dvh;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      z-index: 36;
+      background-color: black;
+      color: white;
+      box-sizing: border-box;
+    }
+    #pgnViewerContent {
+      background-color: white;
+      color: black;
+      font-size: 1.5em;
+      max-width: 400px;
+      border-radius: 5px;
+      margin-top: 10px;
+      min-width: 250px;
+      padding: 5px;
+      box-sizing: border-box;
+    }
     #illegalMoveOverlay {
       position: absolute;
       top: 50dvh;
@@ -257,10 +281,15 @@
     <div id="boardNumber">
     </div>
     <div id="gameMenu">
-      <button id="cancelSelectionBtn">Cancel Selection</button>
       <button id="undoMoveBtn">Undo Last Move</button>
+      <button id="viewPgn">View PGN</button>
+      <button id="cancelSelectionBtn">Cancel Selection</button>
       <button id="menuBtn">Main Menu</button>
       <button id="gameMenuResumeBtn">Resume Game</button>
+    </div>
+    <div id="pgnViewer">
+      <div id="pgnViewerContent"></div>
+      <button id="pgnViewerResumeBtn">Resume Game</button>
     </div>
     <div id="thinkingIndicator">
       <div class="spinner-tl"></div>
@@ -427,27 +456,34 @@
         let history = getCurrentGame().history({ verbose: true });
         let lastPly = history[history.length - 1];
         if (lastPly) {
-          if (lastPly.flags.includes('k') || lastPly.flags.includes('q')) {
-            s = `${getPieceIcon(lastPly.piece, lastPly.color)}${lastPly.flags.includes('k') ? 'o-o' : 'o-o-o'}`;
-          }
-          else {
-            s =`${getPieceIcon(lastPly.piece, lastPly.color)}${lastPly.from}${lastPly.captured ? 'x' : '-'}${lastPly.to}`;
-            if (lastPly.promotion) {
-              s += `=${getPieceIcon(lastPly.promotion, lastPly.color)}`;
-            }
-          }
-          if (getCurrentGame().isCheckmate()) {
-            s += '#';
-          } else if (getCurrentGame().isDraw()) {
-            s += ' ½-½';
-          } else if (getCurrentGame().inCheck()) {
-            s+='+';
-          }
+          s = getMoveString(getCurrentGame(), lastPly);
         } else {
           s = '';
         }
       }
       lastMovesEl.textContent = s;
+    }
+
+    function getMoveString(game, plyFromVerboseHistory) {
+      const ply = plyFromVerboseHistory;
+      let s = '';
+      if (ply.flags.includes('k') || ply.flags.includes('q')) {
+        s = `${getPieceIcon(ply.piece, ply.color)}${ply.flags.includes('k') ? 'o-o' : 'o-o-o'}`;
+      }
+      else {
+        s =`${getPieceIcon(ply.piece, ply.color)}${ply.from}${ply.captured ? 'x' : '-'}${ply.to}`;
+        if (ply.promotion) {
+          s += `=${getPieceIcon(ply.promotion, ply.color)}`;
+        }
+      }
+      if (game.isCheckmate()) {
+        s += '#';
+      } else if (game.isDraw()) {
+        s += ' ½-½';
+      } else if (game.inCheck()) {
+        s+='+';
+      }
+      return s;
     }
 
     function onUserMove(from, to) {
@@ -784,6 +820,42 @@
         default: throw `Unknown piece letter '${letter}'.`;
       }
     }
+    
+    const pgnViewer = document.getElementById("pgnViewer");
+    const pgnViewerContent = document.getElementById("pgnViewerContent");
+    function onViewPgnClicked() {
+      let pgnHtml = '';
+      let boardNumber = 1;
+      for (let game of games) {
+        if (isSimul()) {
+          pgnHtml += `<strong>Board ${boardNumber++}</strong><br />`;
+        }
+        const history = game.history({ verbose: true});
+        if (history.length > 0) {
+          let tempGame = new Chess(history[0].before);
+          pgnHtml += "<table style='border: none'>";
+          for (let i = 0; i < history.length; i++) {
+            let ply = history[i];
+            tempGame.move({ from: ply.from, to: ply.to, promotion: ply.promotion });
+            if (i % 2 == 0) {
+              pgnHtml += `<tr><td>${i / 2 + 1}. </td>`;
+            }
+            pgnHtml += `<td>${getMoveString(tempGame, ply)}</td>`;
+            if (i % 2 != 0) {
+              pgnHtml += '</tr>';
+            }
+          }
+          pgnHtml += "</table><br/>";
+        }
+      }
+      pgnViewerContent.innerHTML = pgnHtml;
+      pgnViewer.style.display = "flex";
+      toggleVisibilityOfGameMenu(false);
+    }
+
+    document.getElementById("pgnViewerResumeBtn").addEventListener("click", () => {
+      pgnViewer.style.display = "none";
+    });
 
     function onCancelSelectionClicked() {
       toggleVisibilityOfGameMenu(false);
@@ -801,7 +873,6 @@
     let touchEndX = 0;
     for (let touchCorner of document.getElementsByClassName("touch-corner")) {
       touchCorner.addEventListener('touchstart', (e) => {
-        console.log('start');
         if (e.touches.length === 1) { // Only consider single touch
           touchStartX = e.touches[0].clientX;
           touchEndX = 0;
@@ -809,22 +880,16 @@
       }, { passive: true }); // Use passive listener for performance
 
       touchCorner.addEventListener('touchmove', (e) => {
-        console.log('move');
-
         if (e.touches.length === 1) {
           touchEndX = e.touches[0].clientX;
         }
       }, { passive: true }); // Use passive listener for performance
 
       touchCorner.addEventListener('touchend', () => {
-        console.log('end');
-
         if (touchStartX && touchEndX) {
           const swipeDistanceToLeft = touchStartX - touchEndX;
           const screenWidth = window.innerWidth;
           const threshold = screenWidth * 0.25;
-          console.log('threshold: ' + threshold);
-          console.log('swipeDistance: ' + swipeDistanceToLeft);
           if (swipeDistanceToLeft > threshold) {
             onCancelSelectionClicked();
           }
@@ -993,6 +1058,7 @@
       document.getElementById("resumeBtn").addEventListener("click", resumeGame);
       document.getElementById("menuBtn").addEventListener("click", showMenu);
       document.getElementById("cancelSelectionBtn").addEventListener("click", onCancelSelectionClicked);
+      document.getElementById("viewPgn").addEventListener("click", onViewPgnClicked);
       document.getElementById("undoMoveBtn").addEventListener("click", () => {
         toggleVisibilityOfGameMenu(false);
         if (isSimul()) {
