@@ -1014,12 +1014,11 @@
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // Register Service Worker for installing the app.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./service-worker.js')
             .then(registration => {
-              console.log('Service Worker registered with scope:', registration.scope);
+              console.log(`Service Worker registered with scope ${registration.scope}. The 'Install app for offline use' option may now be available, depending on the browser that is used.`);
             })
             .catch(error => {
               console.error('Service Worker registration failed:', error);
