@@ -257,9 +257,14 @@
       <option value="960">Variant: 960</option>
     </select>
     <div id="fenPreview"></div>
-    <label style="margin-top: 35px; margin-bottom: 25px; color: white">
-      <input type="checkbox" id="alwaysQueen" checked> Always promote to queen
-    </label>
+    <div style="margin-top: 35px; margin-bottom: 25px">
+      <label style="color: #007bff">
+        <input type="checkbox" id="alwaysQueen" checked> Always promote to queen
+      </label><br/>
+      <label style="color: #007bff">
+        <input type="checkbox" id="mentionColor"> Mention color
+      </label>
+    </div>
     <button id="startBtn">Start Game</button>
     <button id="resumeBtn" class="hidden">Resume Game</button>
     <a href="./about" target="_blank" style="margin-top: 1em; font-size: 1.2em; text-decoration: none; color: #007bff;">About this app</a>
@@ -329,6 +334,7 @@
     let stockfishDepth;
     let stockfish;
     let engineMoveCandidates = [];
+    let mentionColor;
 
     function getCurrentGame() {
       return games[currentGameIndex];
@@ -408,7 +414,9 @@
         updateSelectionPreview();
 
         if (moveResult.flags.includes('k') || moveResult.flags.includes('q')) {
-          playSound(getEngineColor());
+          if (mentionColor) {
+            playSound(getEngineColor());
+          }
           playSound("king");
           playSound("from");
           playSound(from[0]);
@@ -418,7 +426,9 @@
           playSound(to[0]);
           playSound(to[1]);
         } else {
-          playSound(getEngineColor());
+          if (mentionColor) {
+            playSound(getEngineColor());
+          }
           playSound(engineFromPieceFullName);
           playSound('from');
           playSound(from[0]);
@@ -661,6 +671,7 @@
 
     function startGame() {
       initStockfish();
+      mentionColor = document.getElementById('mentionColor').checked;
       audioQueue = [];
       isPlaying = false;
       simul = parseInt(boardsSelect.value);
@@ -758,6 +769,7 @@
     function resumeGame() {
       document.getElementById('menu').classList.remove('active');
       document.getElementById('game').classList.add('active');
+      mentionColor = document.getElementById('mentionColor').checked;
     }
 
     function handleTouch(corner) {
@@ -784,7 +796,9 @@
           fromSquare = square;
           displayLastMoveString(`${pieceIcons[fromPiece]}${fromSquare}-?`);
           moveSequence = [];
-          playSound(getPlayerColor());
+          if (mentionColor) {
+            playSound(getPlayerColor());
+          }
           playSound(getFullPieceName(pieceData.type));
           playSound('from');
           playSound(fromSquare[0]);
