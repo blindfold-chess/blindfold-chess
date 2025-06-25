@@ -221,6 +221,10 @@
       z-index: 26;
       pointer-events: none;
     }
+    #voiceSelection span, #voiceSelection label {
+      display: inline-block;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -257,11 +261,20 @@
       <option value="960">Variant: 960</option>
     </select>
     <div id="fenPreview"></div>
-    <div style="margin-top: 35px; margin-bottom: 25px">
-      <label style="color: #007bff">
+    <div style="margin-top: 20px; margin-bottom: 15px; color: #007bff; line-height: 35px;">
+      <div id="voiceSelection">
+        <span>Engine voice:</span>
+        <label>
+          <input type="radio" name="voice" value="voice-a" checked> A
+        </label>
+        <label>
+          <input type="radio" name="voice" value="voice-b"> B
+        </label>
+      </div>
+      <label>
         <input type="checkbox" id="alwaysQueen" checked> Always promote to queen
       </label><br/>
-      <label style="color: #007bff">
+      <label>
         <input type="checkbox" id="mentionColor"> Mention color
       </label>
     </div>
@@ -360,8 +373,8 @@
       const boardNrEl = document.getElementById("boardNumber");
       if (isSimul()) {
         let nr = currentGameIndex + 1;
-        playSound("board");
-        playSound(nr.toString());
+        playSound("board", getEngineVoice());
+        playSound(nr.toString(), getEngineVoice());
         pauseSound();
         boardNrEl.textContent = `Board ${nr}`;
       } else {
@@ -412,50 +425,50 @@
         document.getElementById("thinkingIndicator").style.display = "none";
         displayLastMoveString();
         updateSelectionPreview();
-
+        const engineVoice = getEngineVoice();
         if (moveResult.flags.includes('k') || moveResult.flags.includes('q')) {
           if (mentionColor) {
-            playSound(getEngineColor());
+            playSound(getEngineColor(), engineVoice);
           }
-          playSound("king");
-          playSound("from");
-          playSound(from[0]);
-          playSound(from[1]);
-          playSound("castles");
-          playSound("to");
-          playSound(to[0]);
-          playSound(to[1]);
+          playSound("king", engineVoice);
+          playSound("from", engineVoice);
+          playSound(from[0], engineVoice);
+          playSound(from[1], engineVoice);
+          playSound("castles", engineVoice);
+          playSound("to", engineVoice);
+          playSound(to[0], engineVoice);
+          playSound(to[1], engineVoice);
         } else {
           if (mentionColor) {
-            playSound(getEngineColor());
+            playSound(getEngineColor(), engineVoice);
           }
-          playSound(engineFromPieceFullName);
-          playSound('from');
-          playSound(from[0]);
-          playSound(from[1]);
+          playSound(engineFromPieceFullName, engineVoice);
+          playSound('from', engineVoice);
+          playSound(from[0], engineVoice);
+          playSound(from[1], engineVoice);
           if (moveResult.captured) {
-            playSound("takes");
+            playSound("takes", engineVoice);
           } else {
-            playSound('to');
+            playSound('to', engineVoice);
           }
-          playSound(to[0]);
-          playSound(to[1]);
+          playSound(to[0], engineVoice);
+          playSound(to[1], engineVoice);
         }
 
         if (moveResult.promotion) {
-          playSound("promoted");
-          playSound("to");
-          playSound(getFullPieceName(moveResult.promotion));
+          playSound("promoted", engineVoice);
+          playSound("to", engineVoice);
+          playSound(getFullPieceName(moveResult.promotion), engineVoice);
         }
 
         if (getCurrentGame().isCheckmate()) {
-          playSound("checkmate");
+          playSound("checkmate", engineVoice);
         } else if (getCurrentGame().isStalemate()) {
-          playSound("stalemate");
+          playSound("stalemate", engineVoice);
         } else if (getCurrentGame().inCheck()) {
-          playSound("check");
+          playSound("check", engineVoice);
         } else if (getCurrentGame().isDraw()) {
-          playSound("draw");
+          playSound("draw", engineVoice);
         }
       }
     }
@@ -671,7 +684,7 @@
 
     function startGame() {
       initStockfish();
-      mentionColor = document.getElementById('mentionColor').checked;
+      setAudioOptions();
       audioQueue = [];
       isPlaying = false;
       simul = parseInt(boardsSelect.value);
@@ -754,6 +767,11 @@
       };
     }
 
+    function setAudioOptions() {
+      selectedEngineVoice = document.getElementById('voiceSelection').querySelector('input[name="voice"]:checked').value;
+      mentionColor = document.getElementById('mentionColor').checked;
+    }
+
     function showMenu() {
       toggleVisibilityOfGameMenu(false);
       document.getElementById('game').classList.remove('active');
@@ -767,9 +785,9 @@
     }
 
     function resumeGame() {
+      setAudioOptions();
       document.getElementById('menu').classList.remove('active');
       document.getElementById('game').classList.add('active');
-      mentionColor = document.getElementById('mentionColor').checked;
     }
 
     function handleTouch(corner) {
@@ -1121,19 +1139,21 @@
       const thinkingIndicator = document.getElementById("thinkingIndicator");
       thinkingIndicator.style.display = "block";
 
-      const audioPromises = fileNames.map(fileName => {
-        return new Promise(resolve => {
-          const audio = new Audio(`./audio/${language}/${fileName}.mp3`);
-          audio.preload = "auto";
-          audio.oncanplaythrough = () => {
-            audioMap[fileName] = audio;
-            resolve();
-          };
-        });
+      const audioPromises = [];
+      let createAudioPromises = (voice, fileName) =>  new Promise(resolve => {
+        const audio = new Audio(`./audio/${language}/${voice}/${fileName}.mp3`);
+        audio.preload = "auto";
+        audio.volume = voice == 'voice-a' ? 1 : 0.6; // Temporary fix for making audio volume of the 2 different voices equal.
+        audio.oncanplaythrough = () => {
+          audioMap[`${voice}/${fileName}`] = audio;
+          resolve();
+        };
       });
-
+      for (const fileName of fileNames) {
+        audioPromises.push(createAudioPromises('voice-b', fileName));
+        audioPromises.push(createAudioPromises('voice-a', fileName));
+      }
       await Promise.all(audioPromises);
-
       thinkingIndicator.style.display = "none";
       audioPreloaded = true;
     }
@@ -1141,9 +1161,19 @@
     let audioQueue = [];
     let isPlaying = false;
     let language = 'en';
+    let selectedEngineVoice;
 
-    function playSound(filename) {
-      audioQueue.push(filename);
+    function getEngineVoice() {
+      return selectedEngineVoice;
+    }
+    function getPlayerVoice() {
+      return selectedEngineVoice == "voice-b" ? "voice-a" : "voice-b";
+    }
+    function playSound(fileName, voice = null) {
+      audioQueue.push({ 
+        voice: voice ?? getPlayerVoice(),
+        fileName: fileName
+      });
       processAudioQueue();
     }
     function pauseSound() {
@@ -1153,8 +1183,8 @@
     function processAudioQueue() {
       if (isPlaying || audioQueue.length === 0) return;
 
-      const fileName = audioQueue.shift();
-      if (fileName == "__pause") {
+      const fileInfo = audioQueue.shift();
+      if (fileInfo.fileName == "__pause") {
         isPlaying = true;
         setTimeout(() => {
           isPlaying = false;
@@ -1162,7 +1192,7 @@
         }, 500);
         return;
       }
-      const audio = audioMap[fileName];
+      const audio = audioMap[`${fileInfo.voice}/${fileInfo.fileName}`];
       isPlaying = true;
       audio.currentTime = 0;
       audio.play();
