@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blindfold-chess-v1';
+const CACHE_NAME = 'blindfold-chess-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -45,29 +45,29 @@ const ASSETS_TO_CACHE = [
   '/icons/android-chrome-192x192.png',
   '/icons/android-chrome-512x512.png',
   '/icons/apple-touch-icon.png',
+  '/icons/favicon-48x48.png',
   '/icons/favicon-32x32.png',
   '/icons/favicon-16x16.png'
 ];
 
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing...');
+  console.log('Service Worker: Installing blindfold-chess.app for offline play...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Caching assets.');
         return cache.addAll(ASSETS_TO_CACHE);
       })
   );
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating...');
+  console.log('Service Worker: Activating for offline use...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache', cacheName);
+            console.log('Service Worker: Deleting old cache of blindfold-chess.app for offline play...', cacheName);
             return caches.delete(cacheName);
           }
         })
