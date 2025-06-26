@@ -78,12 +78,12 @@ const ASSETS_TO_CACHE = [
   '/audio/en/voice-b/7.mp3',
   '/audio/en/voice-b/8.mp3',
   // Icons
-  '/icons/android-chrome-192x192.png',
-  '/icons/android-chrome-512x512.png',
+  '/icons/web-app-manifest-192x192.png',
+  '/icons/web-app-manifest-192x192.png',
   '/icons/apple-touch-icon.png',
-  '/icons/favicon-48x48.png',
-  '/icons/favicon-32x32.png',
-  '/icons/favicon-16x16.png'
+  '/icons/favicon-96x96.png',
+  '/icons/favicon.ico',
+  '/icons/favicon.svg'
 ];
 
 self.addEventListener('install', (event) => {

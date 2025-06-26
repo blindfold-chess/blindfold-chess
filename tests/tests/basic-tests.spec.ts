@@ -39,7 +39,7 @@ async function waitFor(predicate: () => boolean) {
     }
 }
 
-test.describe('Blindfold Chess Application Tests', () => {
+test.describe('Blindfold-Chess.Appl Tests', () => {
 
   test('should not display "Board 1" when starting a single board game', async ({ page }) => {
     await page.selectOption('#boardsSelect', '1'); // Ensure 1 board is selected
