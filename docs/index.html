@@ -413,6 +413,7 @@
       document.getElementById("thinkingIndicator").style.display = "block";
       stockfish.postMessage("position fen " + getCurrentGame().fen());
       stockfish.postMessage(`go depth ${stockfishDepth}`);
+      moveSequence = []; // Pre-moves are not (yet) allowed. Accidental double tap is cleared here. Todo: make invisible overlay until the engine is thinking.
     }
 
     function playEngineMove(move) {
