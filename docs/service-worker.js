@@ -83,7 +83,7 @@ const ASSETS_TO_CACHE = [
   '/audio/en/voice-b/8.mp3',
   // Icons
   '/icons/web-app-manifest-192x192.png',
-  '/icons/web-app-manifest-192x192.png',
+  '/icons/web-app-manifest-512x512.png',
   '/icons/apple-touch-icon.png',
   '/icons/favicon-96x96.png',
   '/icons/favicon.ico',
