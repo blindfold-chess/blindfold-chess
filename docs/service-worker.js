@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blindfold-chess-v5';
+const CACHE_NAME = 'blindfold-chess-v6';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -6,6 +6,8 @@ const ASSETS_TO_CACHE = [
   '/about/index.html',
   '/libs/chess.js',
   '/libs/stockfish.js',
+  '/libs/stockfish.wasm',
+  '/libs/stockfish.wasm.js',
   // Audio files
   '/audio/en/voice-a/board.mp3',
   '/audio/en/voice-a/white.mp3',
