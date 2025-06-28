@@ -1,7 +1,9 @@
-const CACHE_NAME = 'blindfold-chess-v3';
+const CACHE_NAME = 'blindfold-chess-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/about/',
+  '/about/index.html',
   '/libs/chess.js',
   '/libs/stockfish.js',
   // Audio files
