@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blindfold Chess App</title>
-  <meta name="description" content="Master blindfold chess via a unique touch input system. Practice eyes-closed with audio feedback, single-board or multi-board, and Stockfish AI at thinking depth of your choice. Online and offline play available.">
+  <meta name="description" content="Master blindfold chess via a unique touch input system. Practice eyes-closed with audio feedback, single-board or multi-board, against AI at thinking depth of your choice. Online and offline play available.">
   <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
   <link rel="shortcut icon" href="/icons/favicon.ico" />
@@ -263,7 +263,7 @@
     <div id="fenPreview"></div>
     <div style="margin-top: 20px; margin-bottom: 15px; color: #007bff; line-height: 35px;">
       <div id="voiceSelection">
-        <span>Engine voice:</span>
+        <span>Opponent voice:</span>
         <label>
           <input type="radio" name="voice" value="voice-a" checked> A
         </label>
@@ -346,7 +346,7 @@
     let promotionTargetSquare = null;
     let stockfishDepth;
     let stockfish;
-    let engineMoveCandidates = [];
+    let opponentMoveCandidates = [];
     let mentionColor;
 
     function getCurrentGame() {
@@ -365,7 +365,7 @@
       }
     }
 
-    function getEngineColor() {
+    function getOpponentColor() {
       return getPlayerColor() == 'white' ? 'black' : 'white';
     }
 
@@ -373,8 +373,8 @@
       const boardNrEl = document.getElementById("boardNumber");
       if (isSimul()) {
         let nr = currentGameIndex + 1;
-        playSound("board", getEngineVoice());
-        playSound(nr.toString(), getEngineVoice());
+        playSound("board", getOpponentVoice());
+        playSound(nr.toString(), getOpponentVoice());
         pauseSound();
         boardNrEl.textContent = `Board ${nr}`;
       } else {
@@ -404,72 +404,72 @@
         handleBoardNumberCommunication();
       }
       if (getPlayerColor() == 'black' || getCurrentGame().history().length > 0) {
-        requestEngineMove();
+        requestOpponentMove();
       }
     }
 
-    function requestEngineMove() {
-      engineMoveCandidates = [];
+    function requestOpponentMove() {
+      opponentMoveCandidates = [];
       document.getElementById("thinkingIndicator").style.display = "block";
       stockfish.postMessage("position fen " + getCurrentGame().fen());
       stockfish.postMessage(`go depth ${stockfishDepth}`);
-      moveSequence = []; // Pre-moves are not (yet) allowed. Accidental double tap is cleared here. Todo: make invisible overlay until the engine is thinking.
+      moveSequence = []; // Pre-moves are not (yet) allowed. Accidental double tap is cleared here. Todo: make invisible overlay until the opponent is thinking.
     }
 
-    function playEngineMove(move) {
+    function playOpponentMove(move) {
       if (move && move.length >= 4) {
         let from = move.slice(0, 2);
         let to = move.slice(2, 4);
-        let engineFromPieceFullName = getFullPieceName(getCurrentGame().get(from).type);
+        let opponentFromPieceFullName = getFullPieceName(getCurrentGame().get(from).type);
         let promotion = move.length > 4 && ['q', 'r', 'b', 'n'].includes(move[4]) ? move[4] : null;
         let moveResult = getCurrentGame().move({ from: from, to: to, promotion: promotion });
         document.getElementById("thinkingIndicator").style.display = "none";
         displayLastMoveString();
         updateSelectionPreview();
-        const engineVoice = getEngineVoice();
+        const opponentVoice = getOpponentVoice();
         if (moveResult.flags.includes('k') || moveResult.flags.includes('q')) {
           if (mentionColor) {
-            playSound(getEngineColor(), engineVoice);
+            playSound(getOpponentColor(), opponentVoice);
           }
-          playSound("king", engineVoice);
-          playSound("from", engineVoice);
-          playSound(from[0], engineVoice);
-          playSound(from[1], engineVoice);
-          playSound("castles", engineVoice);
-          playSound("to", engineVoice);
-          playSound(to[0], engineVoice);
-          playSound(to[1], engineVoice);
+          playSound("king", opponentVoice);
+          playSound("from", opponentVoice);
+          playSound(from[0], opponentVoice);
+          playSound(from[1], opponentVoice);
+          playSound("castles", opponentVoice);
+          playSound("to", opponentVoice);
+          playSound(to[0], opponentVoice);
+          playSound(to[1], opponentVoice);
         } else {
           if (mentionColor) {
-            playSound(getEngineColor(), engineVoice);
+            playSound(getOpponentColor(), opponentVoice);
           }
-          playSound(engineFromPieceFullName, engineVoice);
-          playSound('from', engineVoice);
-          playSound(from[0], engineVoice);
-          playSound(from[1], engineVoice);
+          playSound(opponentFromPieceFullName, opponentVoice);
+          playSound('from', opponentVoice);
+          playSound(from[0], opponentVoice);
+          playSound(from[1], opponentVoice);
           if (moveResult.captured) {
-            playSound("takes", engineVoice);
+            playSound("takes", opponentVoice);
           } else {
-            playSound('to', engineVoice);
+            playSound('to', opponentVoice);
           }
-          playSound(to[0], engineVoice);
-          playSound(to[1], engineVoice);
+          playSound(to[0], opponentVoice);
+          playSound(to[1], opponentVoice);
         }
 
         if (moveResult.promotion) {
-          playSound("promoted", engineVoice);
-          playSound("to", engineVoice);
-          playSound(getFullPieceName(moveResult.promotion), engineVoice);
+          playSound("promoted", opponentVoice);
+          playSound("to", opponentVoice);
+          playSound(getFullPieceName(moveResult.promotion), opponentVoice);
         }
 
         if (getCurrentGame().isCheckmate()) {
-          playSound("checkmate", engineVoice);
+          playSound("checkmate", opponentVoice);
         } else if (getCurrentGame().isStalemate()) {
-          playSound("stalemate", engineVoice);
+          playSound("stalemate", opponentVoice);
         } else if (getCurrentGame().inCheck()) {
-          playSound("check", engineVoice);
+          playSound("check", opponentVoice);
         } else if (getCurrentGame().isDraw()) {
-          playSound("draw", engineVoice);
+          playSound("draw", opponentVoice);
         }
       }
     }
@@ -648,7 +648,7 @@
         if (isSimul()) {
           goToNextBoard();
         } else if (!getCurrentGame().isGameOver()) {
-          requestEngineMove();
+          requestOpponentMove();
         }
       }, 1000);
     }
@@ -722,7 +722,7 @@
       displayLastMoveString(isSimul() ? '' : 'menu');
       handleBoardNumberCommunication();
       if (getPlayerColor() === 'black') {
-        requestEngineMove();
+        requestOpponentMove();
       }
     }
 
@@ -747,29 +747,29 @@
             const move = parts[pvIndex + 1];
             const scoreType = parts[scoreIndex + 1]; // 'cp' or 'mate'
             const scoreValue = parseInt(parts[scoreIndex + 2]);
-            engineMoveCandidates[multipv - 1] = { // Store the latest evaluation for this move index (multipv).
+            opponentMoveCandidates[multipv - 1] = { // Store the latest evaluation for this move index (multipv).
                 move: move,
                 score: scoreType === 'cp' ? scoreValue : null,
                 mate: scoreType === 'mate' ? scoreValue : null
             };
           }
         } else if (msg.startsWith("bestmove")) { // The search for moves is completed.
-          const moves = engineMoveCandidates.filter(m => m); // Filter out any empty array slots in case there are fewer than [multipv value] moves possible.
+          const moves = opponentMoveCandidates.filter(m => m); // Filter out any empty array slots in case there are fewer than [multipv value] moves possible.
           const mateMoves = moves.filter(m => m.mate !== null && m.mate > 0);
           if (mateMoves.length > 0) {
-            playEngineMove(msg.split(' ')[1]); // In case of a mating move, just do the best move.
+            playOpponentMove(msg.split(' ')[1]); // In case of a mating move, just do the best move.
           } else {
             const bestMovesScore = moves[0].score;
             const candidateMoves = moves.filter(m => (bestMovesScore - m.score) <= 20); // moves within 20 centipawns of the best move.
             const move = candidateMoves[Math.floor(Math.random() * candidateMoves.length)].move;
-            playEngineMove(move);
+            playOpponentMove(move);
           }
         }
       };
     }
 
     function setAudioOptions() {
-      selectedEngineVoice = document.getElementById('voiceSelection').querySelector('input[name="voice"]:checked').value;
+      selectedOpponentVoice = document.getElementById('voiceSelection').querySelector('input[name="voice"]:checked').value;
       mentionColor = document.getElementById('mentionColor').checked;
     }
 
@@ -834,7 +834,7 @@
               if (isSimul()) {
                 goToNextBoard();
               } else if (!getCurrentGame().isGameOver()) {
-                requestEngineMove();
+                requestOpponentMove();
               }
             }, 1000);
           }
@@ -1094,13 +1094,13 @@
       document.getElementById("undoMoveBtn").addEventListener("click", () => {
         toggleVisibilityOfGameMenu(false);
         if (isSimul()) {
-          getCurrentGame().undo(); // undo engine move current board
+          getCurrentGame().undo(); // undo opponent move current board
           currentGameIndex = previousGameIndex;
           getCurrentGame().undo(); // undo user move previous board
         } else {
-          getCurrentGame().undo(); // unless the user ended the game (via checkmate or a draw), the last move is the engine's move, because the 'Undo Move' button can only be clicked after the engine's move.
+          getCurrentGame().undo(); // unless the user ended the game (via checkmate or a draw), the last move is the opponent's move, because the 'Undo Move' button can only be clicked after the opponent's move.
           let isUserTurn = getPlayerColor().startsWith(getCurrentGame().turn());
-          if (!isUserTurn) { // the previously undone move was the engine's move.
+          if (!isUserTurn) { // the previously undone move was the opponent's move.
             getCurrentGame().undo(); // undo user move.
           }
         }
@@ -1161,13 +1161,13 @@
     let audioQueue = [];
     let isPlaying = false;
     let language = 'en';
-    let selectedEngineVoice;
+    let selectedOpponentVoice;
 
-    function getEngineVoice() {
-      return selectedEngineVoice;
+    function getOpponentVoice() {
+      return selectedOpponentVoice;
     }
     function getPlayerVoice() {
-      return selectedEngineVoice == "voice-b" ? "voice-a" : "voice-b";
+      return selectedOpponentVoice == "voice-b" ? "voice-a" : "voice-b";
     }
     function playSound(fileName, voice = null) {
       audioQueue.push({ 
