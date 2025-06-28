@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blindfold-chess-v4';
+const CACHE_NAME = 'blindfold-chess-v5';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -27,6 +27,7 @@ const ASSETS_TO_CACHE = [
   '/audio/en/voice-a/promoted.mp3',
   '/audio/en/voice-a/choose-promotion-piece.mp3',
   '/audio/en/voice-a/illegal-move.mp3',
+  '/audio/en/voice-a/illegal-starting-square.mp3',
   '/audio/en/voice-a/a.mp3',
   '/audio/en/voice-a/b.mp3',
   '/audio/en/voice-a/c.mp3',
@@ -63,6 +64,7 @@ const ASSETS_TO_CACHE = [
   '/audio/en/voice-b/promoted.mp3',
   '/audio/en/voice-b/choose-promotion-piece.mp3',
   '/audio/en/voice-b/illegal-move.mp3',
+  '/audio/en/voice-b/illegal-starting-square.mp3',
   '/audio/en/voice-b/a.mp3',
   '/audio/en/voice-b/b.mp3',
   '/audio/en/voice-b/c.mp3',

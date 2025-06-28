@@ -543,7 +543,7 @@
       try {
         moveResult = getCurrentGame().move({ from, to, promotion: isPromotion ? 'q' : undefined });
       } catch {
-        showIllegalMoveFeedback(from);
+        showIllegalMoveFeedbackWithSound('illegal-move');
         fromSquare = null;
         moveSequence = [];
         updateSelectionPreview();
@@ -806,7 +806,7 @@
         if (!fromSquare) {
           const pieceData = getCurrentGame().get(square);
           if (!pieceData || pieceData.color !== getPlayerColor()[0]) {
-            showIllegalMoveFeedback(square);
+            showIllegalMoveFeedbackWithSound('illegal-starting-square');
             moveSequence = [];
             updateSelectionPreview();
             return;
@@ -1010,10 +1010,10 @@
       }
     }
 
-    function showIllegalMoveFeedback(square) {
+    function showIllegalMoveFeedbackWithSound(sound) {
       const overlay = document.getElementById("illegalMoveOverlay");
       overlay.style.backgroundColor = "red";
-      playSound('illegal-move');
+      playSound(sound);
       setTimeout(() => {
         overlay.style.backgroundColor = "transparent";
       }, 1000);
@@ -1127,7 +1127,7 @@
       "board", "white", "black", "king", "queen", "rook", "bishop", "knight", "pawn",
       "from", "to", "takes", "check", "checkmate", "stalemate", "draw",
       "castles", "promoted", "choose-promotion-piece",
-      "illegal-move",
+      "illegal-starting-square", "illegal-move",
       "a", "b", "c", "d", "e", "f", "g", "h",
       "1", "2", "3", "4", "5", "6", "7", "8",
     ];
