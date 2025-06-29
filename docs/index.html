@@ -280,7 +280,7 @@
     </div>
     <button id="startBtn">Start Game</button>
     <button id="resumeBtn" class="hidden">Resume Game</button>
-    <a href="./about/" style="margin-top: 1em; font-size: 1.2em; text-decoration: none; color: #007bff;">About this app</a>
+    <a href="/about/" style="margin-top: 1em; font-size: 1.2em; text-decoration: none; color: #007bff;">About this app</a>
   </div>
 
   <div id="game">
@@ -318,7 +318,7 @@
   </div>
 
   <script type="module" >
-    import { Chess, generateChess960Fen } from './libs/chess.js';
+    import { Chess, generateChess960Fen } from '/libs/chess.js';
     const pieceIcons = {
       r: '♜', n: '♞', b: '♝', q: '♛', k: '♚', p: '♟',
       R: '♖', N: '♘', B: '♗', Q: '♕', K: '♔', P: '♙'
@@ -737,7 +737,7 @@
       if (stockfish) {
         stockfish.terminate();
       }
-      stockfish = new Worker("./libs/stockfish.js");
+      stockfish = new Worker("/libs/stockfish.js");
       stockfish.postMessage(`setoption name MultiPV value 10`); // Configure Stockfish to output the top 10 moves.
       stockfish.onmessage = function (event) {
         const msg = event.data;
@@ -1042,7 +1042,7 @@
     document.addEventListener("DOMContentLoaded", async () => {
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js')
+          navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
               console.log(`Service Worker registered with scope ${registration.scope}. The 'Install app for offline use' option may now be available, depending on the browser that is used.`);
             })
@@ -1151,7 +1151,7 @@
 
       const audioPromises = [];
       let createAudioPromises = (voice, fileName) =>  new Promise(resolve => {
-        const audio = new Audio(`./audio/${language}/${voice}/${fileName}.mp3`);
+        const audio = new Audio(`/audio/${language}/${voice}/${fileName}.mp3`);
         audio.preload = "auto";
         audio.oncanplaythrough = () => {
           audioMap[`${voice}/${fileName}`] = audio;
