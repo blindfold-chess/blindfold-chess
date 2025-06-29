@@ -683,7 +683,9 @@
       }
     }
 
-    function startGame() {
+    async function startGame() {
+      const thinkingIndicator = document.getElementById("thinkingIndicator");
+      thinkingIndicator.style.display = "block";
       initStockfish();
       setAudioOptions();
       audioQueue = [];
@@ -706,6 +708,8 @@
       promotionTargetSquare = null;
       renderPromotionChoices(false);
 
+      await preLoadAudio();
+
       if (variant === '960') {
         const fen = document.getElementById('variantSelect').dataset.fen;
         games = [];
@@ -720,6 +724,9 @@
       }
       window.blindfoldchess_games = games;
       displayLastMoveString(isSimul() ? '' : 'menu');
+
+      thinkingIndicator.style.display = "none";
+      
       handleBoardNumberCommunication();
       if (getPlayerColor() === 'black') {
         requestOpponentMove();
@@ -1075,9 +1082,9 @@
 
       variantSelect.dispatchEvent(new Event("change"));
 
-      await preLoadAudio();
-
-      document.getElementById("startBtn").addEventListener("click", startGame);
+      document.getElementById("startBtn").addEventListener("click", async () => { 
+        await startGame();
+      });
       const boardsSelect = document.getElementById("boardsSelect");
       const colorSelect = document.getElementById("colorSelect");
       boardsSelect.addEventListener("change", () => {
@@ -1135,10 +1142,12 @@
     let audioPreloaded = false;
 
     async function preLoadAudio() {
-      if (audioPreloaded) return;
-
-      const thinkingIndicator = document.getElementById("thinkingIndicator");
-      thinkingIndicator.style.display = "block";
+      if (audioPreloaded) 
+      {
+        console.log('audio was already preloaded.');
+        return;
+      }
+      console.log('preloading audio...');
 
       const audioPromises = [];
       let createAudioPromises = (voice, fileName) =>  new Promise(resolve => {
@@ -1154,7 +1163,7 @@
         audioPromises.push(createAudioPromises('voice-a', fileName));
       }
       await Promise.all(audioPromises);
-      thinkingIndicator.style.display = "none";
+      console.log('audio preloaded.');
       audioPreloaded = true;
     }
 

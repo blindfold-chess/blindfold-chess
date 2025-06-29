@@ -8,11 +8,12 @@ const delay = (ms: number): Promise<void> => {
   return new Promise(res => setTimeout(res, ms));
 };
 
-// Helper function to simulate a corner click
-async function clickCorner(page: Page, cornerId: 'tl' | 'tr' | 'bl' | 'br') {
-  await page.locator(`#${cornerId}`).click();
-}
 type CornerIdType = 'tl' | 'tr' | 'bl' | 'br';
+async function clickCorner(page: Page, cornerId: CornerIdType) {
+  const cornerLocator = page.locator(`#${cornerId}`);
+  await cornerLocator.waitFor({ state: 'visible' });
+  await cornerLocator.click();
+}
 async function clickCorners(page: Page, ...cornerIds: CornerIdType[]) {
   for (let cornerId of cornerIds) {
     await clickCorner(page, cornerId);
@@ -23,6 +24,7 @@ async function clickCorners(page: Page, ...cornerIds: CornerIdType[]) {
 async function startGame(page: Page) {
   await page.click('#startBtn');
   await page.waitForSelector('#game.active'); // Wait for the game screen to become active
+  await page.locator('#thinkingIndicator').waitFor({ state: 'hidden' });
 }
 
 async function getTextContent(page: Page, selector: string) {
@@ -44,8 +46,7 @@ test.describe('Blindfold-Chess.Appl Tests', () => {
   test('should not display "Board 1" when starting a single board game', async ({ page }) => {
     await page.selectOption('#boardsSelect', '1'); // Ensure 1 board is selected
     await startGame(page);
-    const boardNumberText = await getTextContent(page, '#boardNumber');
-    expect(boardNumberText).toBe(''); // No board number for single player game
+    await page.waitForFunction(() => document.getElementById('boardNumber')?.textContent === '');
   });
 
   test('should display "Board 1" then "Board 2" then "Board 1" when starting a 2-board game and making moves', async ({ page }) => {

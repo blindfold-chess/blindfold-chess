@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blindfold-chess-v7';
+const CACHE_NAME = 'blindfold-chess-v8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -93,23 +93,25 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing blindfold-chess.app for offline play...');
+  console.log('Service Worker: Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(ASSETS_TO_CACHE);
+        return cache.addAll(ASSETS_TO_CACHE)
+          .then(() => console.log('Service Worker: Assets cached successfully'))
+          .catch((error) => console.error('Service Worker: Failed to cache assets', error));
       })
   );
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating for offline use...');
+  console.log('Service Worker: Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache of blindfold-chess.app for offline play...', cacheName);
+            console.log('Service Worker: Deleting old cache...', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -124,8 +126,10 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request)
       .then((response) => {
         if (response) {
+          console.log('Service Worker: Serving from cache', event.request.url);
           return response;
         }
+        console.log('Service Worker: Fetching from network', event.request.url);
         return fetch(event.request).then(
           (response) => {
             if (!response || response.status !== 200 || response.type !== 'basic') {
@@ -138,7 +142,10 @@ self.addEventListener('fetch', (event) => {
               });
             return response;
           }
-        );
+        ).catch((error) => {
+          console.error('Service Worker: Failed to fetch', error);
+          throw error;
+        });
       })
   );
 });
