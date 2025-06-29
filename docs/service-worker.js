@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blindfold-chess-v6';
+const CACHE_NAME = 'blindfold-chess-v7';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
